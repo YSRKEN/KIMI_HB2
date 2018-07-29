@@ -5,8 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RepairDatabaseEditor.View"
         mc:Ignorable="d"
-        Title="MainView" Height="450" Width="800">
-    <Grid>
-        <TextBlock>Test</TextBlock>
-    </Grid>
+        Title="改修情報DBエディタ" Height="400" Width="500">
+    <TabControl Margin="10,10,10,10">
+        <TabItem Header="艦娘情報">
+            <TextBlock Text="TabItem1 Content" />
+        </TabItem>
+        <TabItem Header="装備情報">
+            <TextBlock Text="TabItem2 Content" />
+        </TabItem>
+        <TabItem Header="改修消費1">
+            <TextBlock Text="TabItem3 Content" />
+        </TabItem>
+        <TabItem Header="改修消費2">
+            <TextBlock Text="TabItem3 Content" />
+        </TabItem>
+        <TabItem Header="改修曜日">
+            <TextBlock Text="TabItem3 Content" />
+        </TabItem>
+        <TabItem Header="改修更新">
+            <TextBlock Text="TabItem3 Content" />
+        </TabItem>
+    </TabControl>
 </Window>
