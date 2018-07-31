@@ -1,4 +1,5 @@
-﻿using RepairDatabaseEditor.View;
+﻿using RepairDatabaseEditor.Service;
+using RepairDatabaseEditor.View;
 using RepairDatabaseEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,9 @@ namespace RepairDatabaseEditor
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            var dataStore = new DataStore();
             var mv = new MainView();
-            var mvm = new MainViewModel();
+            var mvm = new MainViewModel(dataStore);
             mv.DataContext = mvm;
             mv.Show();
         }

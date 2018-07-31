@@ -1,4 +1,5 @@
 ﻿using RepairDatabaseEditor.Model;
+using RepairDatabaseEditor.Service;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -13,6 +14,11 @@ namespace RepairDatabaseEditor.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        /// データベース
+        /// </summary>
+        private DataStore dataStore;
+
+        /// <summary>
         /// 艦娘一覧
         /// </summary>
         public ObservableCollection<Kammusu> KammusuList { get; set; }
@@ -20,11 +26,10 @@ namespace RepairDatabaseEditor.ViewModel
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public MainViewModel()
+        public MainViewModel(DataStore dataStore)
         {
-            KammusuList = new ObservableCollection<Kammusu>();
-            KammusuList.Add(new Kammusu() { Id = 0, Name = "○" });
-            KammusuList.Add(new Kammusu() { Id = 1, Name = "吹雪" });
+            this.dataStore = dataStore;
+            KammusuList = new ObservableCollection<Kammusu>(dataStore.Kammusus);
         }
     }
 }
