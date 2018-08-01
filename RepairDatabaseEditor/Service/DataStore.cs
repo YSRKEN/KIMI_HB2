@@ -15,6 +15,7 @@ namespace RepairDatabaseEditor.Service
     class DataStore
     {
         public List<Kammusu> Kammusus { get; } = new List<Kammusu>();
+        public List<Weapon> Weapons { get; } = new List<Weapon>();
 
         /// <summary>
         /// コンストラクタ
@@ -25,6 +26,11 @@ namespace RepairDatabaseEditor.Service
             {
                 string jsonText = sr.ReadToEnd();
                 Kammusus = JsonConvert.DeserializeObject<List<Kammusu>>(jsonText);
+            }
+            using (var sr = new StreamReader(@"DB/weapon_list.json", Encoding.UTF8))
+            {
+                string jsonText = sr.ReadToEnd();
+                Weapons = JsonConvert.DeserializeObject<List<Weapon>>(jsonText);
             }
         }
     }

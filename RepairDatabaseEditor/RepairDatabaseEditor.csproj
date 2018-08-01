@@ -85,6 +85,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\Kammusu.cs" />
+    <Compile Include="Model\Weapon.cs" />
     <Compile Include="Service\DataStore.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="View\MainView.xaml.cs">
@@ -119,6 +120,9 @@
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="DB\kammusu_list.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="DB\weapon_list.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

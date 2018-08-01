@@ -20,7 +20,16 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="装備情報">
-            <TextBlock Text="TabItem2 Content" />
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="実装一覧" />
+                <ListBox ItemsSource="{Binding WeaponList}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
         </TabItem>
         <TabItem Header="改修消費1">
             <TextBlock Text="TabItem3 Content" />

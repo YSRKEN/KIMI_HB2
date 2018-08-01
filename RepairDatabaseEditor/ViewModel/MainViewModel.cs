@@ -24,12 +24,18 @@ namespace RepairDatabaseEditor.ViewModel
         public ObservableCollection<Kammusu> KammusuList { get; set; }
 
         /// <summary>
+        /// 装備一覧
+        /// </summary>
+        public ObservableCollection<Weapon> WeaponList { get; set; }
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public MainViewModel(DataStore dataStore)
         {
             this.dataStore = dataStore;
             KammusuList = new ObservableCollection<Kammusu>(dataStore.Kammusus);
+            WeaponList = new ObservableCollection<Weapon>(dataStore.Weapons);
         }
     }
 }

@@ -1,17 +1,17 @@
 ﻿namespace RepairDatabaseEditor.Model
 {
     /// <summary>
-    /// 艦娘の情報
+    /// 装備の情報
     /// </summary>
-    public class Kammusu
+    public class Weapon
     {
         /// <summary>
-        /// 艦船ID
+        /// 装備ID
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// 艦名
+        /// 装備名
         /// </summary>
         public string Name { get; set; }
     }
