@@ -1,6 +1,8 @@
-﻿using RepairDatabaseEditor.Model;
+﻿using Newtonsoft.Json;
+using RepairDatabaseEditor.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,10 +21,11 @@ namespace RepairDatabaseEditor.Service
         /// </summary>
         public DataStore()
         {
-            // スタブ
-            Kammusus.Add(new Kammusu() { Id = 0, Name = "○" });
-            Kammusus.Add(new Kammusu() { Id = 1, Name = "吹雪" });
-
+            using(var sr = new StreamReader(@"DB/kammusu_list.json", Encoding.UTF8))
+            {
+                string jsonText = sr.ReadToEnd();
+                Kammusus = JsonConvert.DeserializeObject<List<Kammusu>>(jsonText);
+            }
         }
     }
 }
