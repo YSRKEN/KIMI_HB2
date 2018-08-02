@@ -8,7 +8,7 @@
         Title="改修情報DBエディタ" Height="400" Width="500">
     <TabControl Margin="10,10,10,10">
         <TabItem Header="艦娘情報">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Margin="10,10,10,10">
                 <TextBlock Text="実装一覧" />
                 <ListBox ItemsSource="{Binding KammusuList}">
                     <ListBox.ItemTemplate>
