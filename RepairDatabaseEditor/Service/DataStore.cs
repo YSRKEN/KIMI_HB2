@@ -26,11 +26,13 @@ namespace RepairDatabaseEditor.Service
             {
                 string jsonText = sr.ReadToEnd();
                 Kammusus = JsonConvert.DeserializeObject<List<Kammusu>>(jsonText);
+                Kammusus.Sort((a, b) => a.Id > b.Id ? 1 : a.Id < b.Id ? -1 : 0);
             }
             using (var sr = new StreamReader(@"DB/weapon_list.json", Encoding.UTF8))
             {
                 string jsonText = sr.ReadToEnd();
                 Weapons = JsonConvert.DeserializeObject<List<Weapon>>(jsonText);
+                Weapons.Sort((a, b) => a.Id > b.Id ? 1 : a.Id < b.Id ? -1 : 0);
             }
         }
     }
