@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RepairDatabaseEditor.Model
 {
@@ -57,6 +58,36 @@ namespace RepairDatabaseEditor.Model
         public ReactiveProperty<string> WeaponName { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
+        /// 艦娘を追加
+        /// </summary>
+        public ReactiveCommand PostKammusuCommand { get; } = new ReactiveCommand();
+
+        /// <summary>
+        /// 艦娘を更新
+        /// </summary>
+        public ReactiveCommand PutKammusuCommand { get; } = new ReactiveCommand();
+
+        /// <summary>
+        /// 艦娘を削除
+        /// </summary>
+        public ReactiveCommand DeleteKammusuCommand { get; } = new ReactiveCommand();
+
+        /// <summary>
+        /// 装備を追加
+        /// </summary>
+        public ReactiveCommand PostWeaponCommand { get; } = new ReactiveCommand();
+
+        /// <summary>
+        /// 装備を更新
+        /// </summary>
+        public ReactiveCommand PutWeaponCommand { get; } = new ReactiveCommand();
+
+        /// <summary>
+        /// 装備を削除
+        /// </summary>
+        public ReactiveCommand DeleteWeaponCommand { get; } = new ReactiveCommand();
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="dataStore">DIするデータベース</param>
@@ -76,6 +107,62 @@ namespace RepairDatabaseEditor.Model
                 WeaponId.Value = value.Id.ToString();
                 WeaponName.Value = value.Name;
             });
+
+            // ボタンを押した際の処理を記述
+            PostKammusuCommand.Subscribe(PostKammusu);
+            PutKammusuCommand.Subscribe(PutKammusu);
+            DeleteKammusuCommand.Subscribe(DeleteKammusu);
+            PostWeaponCommand.Subscribe(PostWeapon);
+            PutWeaponCommand.Subscribe(PutWeapon);
+            DeleteWeaponCommand.Subscribe(DeleteWeapon);
+        }
+
+        /// <summary>
+        /// 艦娘を追加
+        /// </summary>
+        public void PostKammusu()
+        {
+            MessageBox.Show("PostKammusuCommand");
+        }
+
+        /// <summary>
+        /// 艦娘を更新
+        /// </summary>
+        public void PutKammusu()
+        {
+            MessageBox.Show("PutKammusuCommand");
+        }
+
+        /// <summary>
+        /// 艦娘を削除
+        /// </summary>
+        public void DeleteKammusu()
+        {
+            MessageBox.Show("DeleteKammusuCommand");
+        }
+
+        /// <summary>
+        /// 装備を追加
+        /// </summary>
+        public void PostWeapon()
+        {
+            MessageBox.Show("PostKammusuCommand");
+        }
+
+        /// <summary>
+        /// 装備を更新
+        /// </summary>
+        public void PutWeapon()
+        {
+            MessageBox.Show("PutKammusuCommand");
+        }
+
+        /// <summary>
+        /// 装備を削除
+        /// </summary>
+        public void DeleteWeapon()
+        {
+            MessageBox.Show("DeleteKammusuCommand");
         }
     }
 }
