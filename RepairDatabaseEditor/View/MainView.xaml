@@ -13,7 +13,7 @@
                 <ListBox ItemsSource="{Binding model.KammusuList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedKammusu.Value}" Height="65">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding model.ListName}" />
+                            <TextBlock Text="{Binding ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -34,7 +34,7 @@
                 <ListBox ItemsSource="{Binding model.WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedWeapon.Value}" Height="65">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding model.ListName}" />
+                            <TextBlock Text="{Binding ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
