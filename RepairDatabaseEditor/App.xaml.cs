@@ -1,4 +1,5 @@
-﻿using RepairDatabaseEditor.Service;
+﻿using RepairDatabaseEditor.Model;
+using RepairDatabaseEditor.Service;
 using RepairDatabaseEditor.View;
 using RepairDatabaseEditor.ViewModel;
 using System;
@@ -21,7 +22,8 @@ namespace RepairDatabaseEditor
             base.OnStartup(e);
             var dataStore = new DataStore();
             var mv = new MainView();
-            var mvm = new MainViewModel(dataStore);
+            var model = new MainModel(dataStore);
+            var mvm = new MainViewModel(model);
             mv.DataContext = mvm;
             mv.Show();
         }

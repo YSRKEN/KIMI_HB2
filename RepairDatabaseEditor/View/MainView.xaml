@@ -10,42 +10,42 @@
         <TabItem Header="艦娘情報">
             <StackPanel Orientation="Vertical" Margin="5,5,5,5">
                 <TextBlock Text="実装一覧 (艦番号 : 艦名)" Margin="5,5,5,5"/>
-                <ListBox ItemsSource="{Binding KammusuList}" Margin="5,5,5,5" SelectedItem="{Binding SelectedKammusu.Value}" Height="65">
+                <ListBox ItemsSource="{Binding model.KammusuList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedKammusu.Value}" Height="65">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ListName}" />
+                            <TextBlock Text="{Binding model.ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Text="艦番号 (正の半角整数)" Margin="5,5,5,5" />
-                <TextBox Text="{Binding KammusuId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
+                <TextBox Text="{Binding model.KammusuId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <TextBlock Text="艦名" Margin="5,5,5,5" />
-                <TextBox Text="{Binding KammusuName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
+                <TextBox Text="{Binding model.KammusuName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
-                    <Button Content="追加" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding PostKammusuCommand}"/>
-                    <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding PutKammusuCommand}"/>
-                    <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding DeleteKammusuCommand}"/>
+                    <Button Content="追加" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostKammusuCommand}"/>
+                    <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PutKammusuCommand}"/>
+                    <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.DeleteKammusuCommand}"/>
                 </StackPanel>
             </StackPanel>
         </TabItem>
         <TabItem Header="装備情報">
             <StackPanel Orientation="Vertical" Margin="5,5,5,5">
                 <TextBlock Text="実装一覧 (装備番号 : 装備名)" Margin="5,5,5,5"/>
-                <ListBox ItemsSource="{Binding WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding SelectedWeapon.Value}" Height="65">
+                <ListBox ItemsSource="{Binding model.WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedWeapon.Value}" Height="65">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ListName}" />
+                            <TextBlock Text="{Binding model.ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBlock Text="装備番号 (正の半角整数)" Margin="5,5,5,5" />
-                <TextBox Text="{Binding WeaponId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
+                <TextBox Text="{Binding model.WeaponId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <TextBlock Text="装備名" Margin="5,5,5,5" />
-                <TextBox Text="{Binding WeaponName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
+                <TextBox Text="{Binding model.WeaponName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
-                    <Button Content="追加" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding PostWeaponCommand}"/>
-                    <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding PutWeaponCommand}"/>
-                    <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding DeleteWeaponCommand}"/>
+                    <Button Content="追加" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostWeaponCommand}"/>
+                    <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PutWeaponCommand}"/>
+                    <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.DeleteWeaponCommand}"/>
                 </StackPanel>
             </StackPanel>
         </TabItem>
