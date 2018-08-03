@@ -5,18 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RepairDatabaseEditor.View"
         mc:Ignorable="d" Topmost="True"
-        Title="改修情報DBエディタ" Height="310" Width="450">
+        Title="改修情報DBエディタ" Height="370" Width="450">
     <TabControl Margin="10,10,10,10">
         <TabItem Header="艦娘情報">
             <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-                <TextBlock Text="実装一覧" Margin="5,5,5,5"/>
+                <TextBlock Text="実装一覧 (艦番号 : 艦名)" Margin="5,5,5,5"/>
                 <ListBox ItemsSource="{Binding KammusuList}" Margin="5,5,5,5" SelectedItem="{Binding SelectedKammusu.Value}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <TextBlock Text="艦番号 (正の半角整数)" Margin="5,5,5,5" />
+                <TextBox Text="{Binding KammusuId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <TextBlock Text="艦名" Margin="5,5,5,5" />
                 <TextBox Text="{Binding KammusuName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
@@ -28,14 +30,16 @@
         </TabItem>
         <TabItem Header="装備情報">
             <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-                <TextBlock Text="実装一覧" Margin="5,5,5,5"/>
+                <TextBlock Text="実装一覧 (装備番号 : 装備名)" Margin="5,5,5,5"/>
                 <ListBox ItemsSource="{Binding WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding SelectedWeapon.Value}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <TextBlock Text="装備番号 (正の半角整数)" Margin="5,5,5,5" />
+                <TextBox Text="{Binding WeaponId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <TextBlock Text="装備名" Margin="5,5,5,5" />
                 <TextBox Text="{Binding WeaponName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <StackPanel Orientation="Horizontal" Margin="5,5,5,5">

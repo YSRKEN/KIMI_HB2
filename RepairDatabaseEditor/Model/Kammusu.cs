@@ -14,5 +14,10 @@
         /// 艦名
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// 表示用
+        /// </summary>
+        public string ListName { get => Id.ToString() + " : " + Name; }
     }
 }

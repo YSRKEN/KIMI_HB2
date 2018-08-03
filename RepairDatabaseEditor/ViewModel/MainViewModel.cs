@@ -25,24 +25,34 @@ namespace RepairDatabaseEditor.ViewModel
         public ObservableCollection<Kammusu> KammusuList { get; }
 
         /// <summary>
-        /// 装備一覧
-        /// </summary>
-        public ObservableCollection<Weapon> WeaponList { get; }
-
-        /// <summary>
-        /// 選択中の艦娘の名前
+        /// 選択中の艦娘
         /// </summary>
         public ReactiveProperty<Kammusu> SelectedKammusu { get; set; } = new ReactiveProperty<Kammusu>(new Kammusu());
 
         /// <summary>
-        /// 選択中の装備の名前
+        /// 艦娘の番号
         /// </summary>
-        public ReactiveProperty<Weapon> SelectedWeapon { get; set; } = new ReactiveProperty<Weapon>(new Weapon());
+        public ReactiveProperty<string> KammusuId { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
         /// 艦娘の名前
         /// </summary>
         public ReactiveProperty<string> KammusuName { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 装備一覧
+        /// </summary>
+        public ObservableCollection<Weapon> WeaponList { get; }
+
+        /// <summary>
+        /// 選択中の装備
+        /// </summary>
+        public ReactiveProperty<Weapon> SelectedWeapon { get; set; } = new ReactiveProperty<Weapon>(new Weapon());
+
+        /// <summary>
+        /// 装備の番号
+        /// </summary>
+        public ReactiveProperty<string> WeaponId { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
         /// 装備の名前
@@ -61,9 +71,11 @@ namespace RepairDatabaseEditor.ViewModel
 
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {
+                KammusuId.Value = value.Id.ToString();
                 KammusuName.Value = value.Name;
             });
             SelectedWeapon.Subscribe(value => {
+                WeaponId.Value = value.Id.ToString();
                 WeaponName.Value = value.Name;
             });
         }
