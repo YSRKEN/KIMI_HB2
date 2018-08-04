@@ -138,9 +138,9 @@ namespace RepairDatabaseEditor.Model
                 .ToReactiveCommand();
             PutKammusuCommand = kammusuId.Select(num => num >= 0)
                 .CombineLatest(KammusuName, (flg, str) => flg && str != "")
-                .CombineLatest(SelectedKammusu, (flg, kammusu) => flg && kammusu.Name != null)
+                .CombineLatest(SelectedKammusu, (flg, kammusu) => flg && kammusu != null && kammusu.Name != null)
                 .ToReactiveCommand();
-            DeleteKammusuCommand = SelectedKammusu.Select(kammusu => kammusu.Name != null)
+            DeleteKammusuCommand = SelectedKammusu.Select(kammusu => kammusu != null && kammusu.Name != null)
                 .ToReactiveCommand();
 
             PostWeaponCommand = weaponId.Select(num => num >= 0)
@@ -148,9 +148,9 @@ namespace RepairDatabaseEditor.Model
                 .ToReactiveCommand();
             PutWeaponCommand = weaponId.Select(num => num >= 0)
                 .CombineLatest(WeaponName, (flg, str) => flg && str != "")
-                .CombineLatest(SelectedWeapon, (flg, weapon) => flg && weapon.Name != null)
+                .CombineLatest(SelectedWeapon, (flg, weapon) => flg && weapon != null && weapon.Name != null)
                 .ToReactiveCommand();
-            DeleteWeaponCommand = SelectedWeapon.Select(weapon => weapon.Name != null)
+            DeleteWeaponCommand = SelectedWeapon.Select(weapon => weapon != null && weapon.Name != null)
                 .ToReactiveCommand();
 
             // 選択変更時の処理を記述
@@ -229,7 +229,15 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PostWeapon()
         {
-            MessageBox.Show("PostKammusuCommand");
+            // 追加操作を行う
+            if (dataStore.PostWeapon(weaponId.Value, WeaponName.Value))
+            {
+                MessageBox.Show("装備データを追加しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("装備データを追加できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         /// <summary>
@@ -237,7 +245,15 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PutWeapon()
         {
-            MessageBox.Show("PutKammusuCommand");
+            // 更新操作を行う
+            if (dataStore.PutWeapon(weaponId.Value, WeaponName.Value, SelectedWeapon.Value.Id))
+            {
+                MessageBox.Show("装備データを更新しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("装備データを更新できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         /// <summary>
@@ -245,7 +261,15 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void DeleteWeapon()
         {
-            MessageBox.Show("DeleteKammusuCommand");
+            // 削除操作を行う
+            if (dataStore.DeleteWeapon(SelectedWeapon.Value.Id))
+            {
+                MessageBox.Show("装備データを削除しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("装備データを削除できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

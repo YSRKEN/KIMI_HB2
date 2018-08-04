@@ -39,6 +39,18 @@ namespace RepairDatabaseEditor.Service
         }
 
         /// <summary>
+        /// 装備のデータを保存
+        /// </summary>
+        private void SaveWeaponList()
+        {
+            string jsonText = JsonConvert.SerializeObject(WeaponList, Formatting.Indented);
+            using (var sw = new StreamWriter(@"DB/weapon_list.json", false, Encoding.UTF8))
+            {
+                sw.Write(jsonText);
+            }
+        }
+
+        /// <summary>
         /// 艦娘のデータ
         /// </summary>
         public ObservableCollection<Kammusu> KammusuList { get; } = new ObservableCollection<Kammusu>();
@@ -67,7 +79,6 @@ namespace RepairDatabaseEditor.Service
                 }
             }
 
-            // 装備データを読み込み
             using (var sr = new StreamReader(@"DB/weapon_list.json", Encoding.UTF8))
             {
                 string jsonText = sr.ReadToEnd();
@@ -141,6 +152,68 @@ namespace RepairDatabaseEditor.Service
                 --kammusuIdDic[id];
             }
             SaveKammusuList();
+            return true;
+        }
+
+        /// <summary>
+        /// 装備のデータを追加する
+        /// </summary>
+        /// <param name="id">装備ID</param>
+        /// <param name="name">装備名</param>
+        /// <returns>追加できたならtrue</returns>
+        public bool PostWeapon(int id, string name)
+        {
+            if (weaponIdDic.ContainsKey(id))
+            {
+                return false;
+            }
+            WeaponList.Add(new Weapon() { Id = id, Name = name });
+            weaponIdDic.Add(id, WeaponList.Count - 1);
+            SaveWeaponList();
+            return true;
+        }
+
+        /// <summary>
+        /// 装備のデータを更新する
+        /// </summary>
+        /// <param name="id">装備ID</param>
+        /// <param name="name">装備名</param>
+        /// <returns>追加できたならtrue</returns>
+        public bool PutWeapon(int id, string name, int oldId)
+        {
+            if (id != oldId && weaponIdDic.ContainsKey(id))
+            {
+                return false;
+            }
+            var temp = new Weapon() { Id = id, Name = name };
+            int index = weaponIdDic[oldId];
+            WeaponList[index] = temp;
+            weaponIdDic.Remove(oldId);
+            weaponIdDic.Add(id, index);
+            SaveWeaponList();
+            return true;
+        }
+
+        /// <summary>
+        /// 装備のデータを削除する
+        /// </summary>
+        /// <param name="oldId"></param>
+        public bool DeleteWeapon(int oldId)
+        {
+
+            if (!weaponIdDic.ContainsKey(oldId))
+            {
+                return false;
+            }
+            int index = weaponIdDic[oldId];
+            WeaponList.RemoveAt(index);
+            weaponIdDic.Remove(oldId);
+            for (int i = index; i < WeaponList.Count; ++i)
+            {
+                int id = WeaponList[i].Id;
+                --weaponIdDic[id];
+            }
+            SaveWeaponList();
             return true;
         }
     }
