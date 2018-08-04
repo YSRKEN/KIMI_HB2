@@ -20,7 +20,7 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 艦娘一覧
         /// </summary>
-        public ObservableCollection<Kammusu> KammusuList { get; }
+        public ObservableCollection<Kammusu> KammusuList { get; set; }
 
         /// <summary>
         /// 選択中の艦娘
@@ -100,10 +100,14 @@ namespace RepairDatabaseEditor.Model
 
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {
+                if (value == null)
+                    return;
                 KammusuId.Value = value.Id.ToString();
                 KammusuName.Value = value.Name;
             });
             SelectedWeapon.Subscribe(value => {
+                if (value == null)
+                    return;
                 WeaponId.Value = value.Id.ToString();
                 WeaponName.Value = value.Name;
             });
@@ -122,7 +126,34 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PostKammusu()
         {
-            MessageBox.Show("PostKammusuCommand");
+            // 艦番がパースできない際は何もしない
+            int kammusuId = -1;
+            if(!int.TryParse(KammusuId.Value, out kammusuId))
+            {
+                return;
+            }
+
+            // 艦名が空白な際は何もしない
+            if(KammusuName.Value == "")
+            {
+                return;
+            }
+
+            // 既存艦とIDが被る際は追加しない
+            if (dataStore.Kammusus.Where(k => k.Id == kammusuId).Count() > 0)
+            {
+                MessageBox.Show("艦船IDは既存艦と被らないようにしてください", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // 追加操作を行う
+            dataStore.PostKammusu(kammusuId, KammusuName.Value);
+            KammusuList.Clear();
+            var temp = dataStore.Kammusus;
+            foreach(var kammusu in temp)
+            {
+                KammusuList.Add(kammusu);
+            }
         }
 
         /// <summary>
@@ -130,7 +161,40 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PutKammusu()
         {
-            MessageBox.Show("PutKammusuCommand");
+            // 艦番がパースできない際は何もしない
+            int kammusuId = -1;
+            if (!int.TryParse(KammusuId.Value, out kammusuId))
+            {
+                return;
+            }
+
+            // 艦名が空白な際は何もしない
+            if (KammusuName.Value == "")
+            {
+                return;
+            }
+
+            // そもそも選択していない際は何もしない
+            if (SelectedKammusu.Value.Name == null)
+            {
+                return;
+            }
+
+            // 既存艦とIDが被る際は追加しない
+            if (dataStore.Kammusus.Where(k => k.Id == kammusuId).Count() > 0 && SelectedKammusu.Value.Id != kammusuId)
+            {
+                MessageBox.Show("艦船IDは既存艦と被らないようにしてください", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // 更新操作を行う
+            dataStore.PutKammusu(kammusuId, KammusuName.Value, SelectedKammusu.Value.Id);
+            KammusuList.Clear();
+            var temp = dataStore.Kammusus;
+            foreach (var kammusu in temp)
+            {
+                KammusuList.Add(kammusu);
+            }
         }
 
         /// <summary>
@@ -138,7 +202,20 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void DeleteKammusu()
         {
-            MessageBox.Show("DeleteKammusuCommand");
+            // そもそも選択していない際は何もしない
+            if (SelectedKammusu.Value.Name == null)
+            {
+                return;
+            }
+
+            // 削除操作を行う
+            dataStore.DeleteKammusu(SelectedKammusu.Value.Id);
+            KammusuList.Clear();
+            var temp = dataStore.Kammusus;
+            foreach (var kammusu in temp)
+            {
+                KammusuList.Add(kammusu);
+            }
         }
 
         /// <summary>
