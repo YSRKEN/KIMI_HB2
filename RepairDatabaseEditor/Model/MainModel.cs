@@ -20,12 +20,12 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 艦娘一覧
         /// </summary>
-        public ObservableCollection<Kammusu> KammusuList { get; set; }
+        public ReadOnlyReactiveCollection<Kammusu> KammusuList { get; }
 
         /// <summary>
         /// 選択中の艦娘
         /// </summary>
-        public ReactiveProperty<Kammusu> SelectedKammusu { get; set; } = new ReactiveProperty<Kammusu>(new Kammusu());
+        public ReactiveProperty<Kammusu> SelectedKammusu { get; } = new ReactiveProperty<Kammusu>(new Kammusu());
 
         /// <summary>
         /// 艦娘の番号
@@ -40,12 +40,12 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 装備一覧
         /// </summary>
-        public ObservableCollection<Weapon> WeaponList { get; }
+        public ReadOnlyReactiveCollection<Weapon> WeaponList { get; }
 
         /// <summary>
         /// 選択中の装備
         /// </summary>
-        public ReactiveProperty<Weapon> SelectedWeapon { get; set; } = new ReactiveProperty<Weapon>(new Weapon());
+        public ReactiveProperty<Weapon> SelectedWeapon { get; } = new ReactiveProperty<Weapon>(new Weapon());
 
         /// <summary>
         /// 装備の番号
@@ -95,8 +95,8 @@ namespace RepairDatabaseEditor.Model
         {
             // リストボックスに標示するデータを読み込み
             this.dataStore = dataStore;
-            KammusuList = new ObservableCollection<Kammusu>(dataStore.Kammusus);
-            WeaponList = new ObservableCollection<Weapon>(dataStore.Weapons);
+            KammusuList = dataStore.SortedKammusuList;
+            WeaponList = dataStore.SortedWeaponList;
 
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {
@@ -139,20 +139,14 @@ namespace RepairDatabaseEditor.Model
                 return;
             }
 
-            // 既存艦とIDが被る際は追加しない
-            if (dataStore.Kammusus.Where(k => k.Id == kammusuId).Count() > 0)
-            {
-                MessageBox.Show("艦船IDは既存艦と被らないようにしてください", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             // 追加操作を行う
-            dataStore.PostKammusu(kammusuId, KammusuName.Value);
-            KammusuList.Clear();
-            var temp = dataStore.Kammusus;
-            foreach(var kammusu in temp)
+            if (dataStore.PostKammusu(kammusuId, KammusuName.Value))
             {
-                KammusuList.Add(kammusu);
+                MessageBox.Show("艦娘データを追加しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("艦娘データを追加できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -180,20 +174,14 @@ namespace RepairDatabaseEditor.Model
                 return;
             }
 
-            // 既存艦とIDが被る際は追加しない
-            if (dataStore.Kammusus.Where(k => k.Id == kammusuId).Count() > 0 && SelectedKammusu.Value.Id != kammusuId)
-            {
-                MessageBox.Show("艦船IDは既存艦と被らないようにしてください", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             // 更新操作を行う
-            dataStore.PutKammusu(kammusuId, KammusuName.Value, SelectedKammusu.Value.Id);
-            KammusuList.Clear();
-            var temp = dataStore.Kammusus;
-            foreach (var kammusu in temp)
+            if (dataStore.PutKammusu(kammusuId, KammusuName.Value, SelectedKammusu.Value.Id))
             {
-                KammusuList.Add(kammusu);
+                MessageBox.Show("艦娘データを更新しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("艦娘データを更新できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -209,12 +197,13 @@ namespace RepairDatabaseEditor.Model
             }
 
             // 削除操作を行う
-            dataStore.DeleteKammusu(SelectedKammusu.Value.Id);
-            KammusuList.Clear();
-            var temp = dataStore.Kammusus;
-            foreach (var kammusu in temp)
+            if (dataStore.DeleteKammusu(SelectedKammusu.Value.Id))
             {
-                KammusuList.Add(kammusu);
+                MessageBox.Show("艦娘データを削除しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("艦娘データを削除できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
