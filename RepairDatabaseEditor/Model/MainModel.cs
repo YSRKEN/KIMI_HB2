@@ -132,6 +132,7 @@ namespace RepairDatabaseEditor.Model
                 int num = -1;
                 return int.TryParse(str, out num) ? num : -1;
             }).ToReadOnlyReactiveProperty();
+
             PostKammusuCommand = kammusuId.Select(num => num >= 0)
                 .CombineLatest(KammusuName, (flg, str) => flg && str != "")
                 .ToReactiveCommand();
@@ -140,6 +141,16 @@ namespace RepairDatabaseEditor.Model
                 .CombineLatest(SelectedKammusu, (flg, kammusu) => flg && kammusu.Name != null)
                 .ToReactiveCommand();
             DeleteKammusuCommand = SelectedKammusu.Select(kammusu => kammusu.Name != null)
+                .ToReactiveCommand();
+
+            PostWeaponCommand = weaponId.Select(num => num >= 0)
+                .CombineLatest(WeaponName, (flg, str) => flg && str != "")
+                .ToReactiveCommand();
+            PutWeaponCommand = weaponId.Select(num => num >= 0)
+                .CombineLatest(WeaponName, (flg, str) => flg && str != "")
+                .CombineLatest(SelectedWeapon, (flg, weapon) => flg && weapon.Name != null)
+                .ToReactiveCommand();
+            DeleteWeaponCommand = SelectedWeapon.Select(weapon => weapon.Name != null)
                 .ToReactiveCommand();
 
             // 選択変更時の処理を記述
