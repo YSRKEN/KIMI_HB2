@@ -3,10 +3,12 @@ using RepairDatabaseEditor.Service;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace RepairDatabaseEditor.Model
 {
@@ -93,10 +95,20 @@ namespace RepairDatabaseEditor.Model
         /// <param name="dataStore">DIするデータベース</param>
         public MainModel(DataStore dataStore)
         {
-            // リストボックスに標示するデータを読み込み
+            // リストボックスに表示するデータを読み込み
             this.dataStore = dataStore;
-            KammusuList = dataStore.SortedKammusuList;
-            WeaponList = dataStore.SortedWeaponList;
+            KammusuList = dataStore.KammusuList.ToReadOnlyReactiveCollection();
+            WeaponList = dataStore.WeaponList.ToReadOnlyReactiveCollection();
+
+            // リストボックスの表示を常にソートするようにする
+            {
+                var collectionView = CollectionViewSource.GetDefaultView(this.KammusuList);
+                collectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Ascending));
+            }
+            {
+                var collectionView = CollectionViewSource.GetDefaultView(this.WeaponList);
+                collectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Ascending));
+            }
 
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {

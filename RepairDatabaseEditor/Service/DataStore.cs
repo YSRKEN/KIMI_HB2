@@ -17,9 +17,9 @@ namespace RepairDatabaseEditor.Service
     class DataStore
     {
         /// <summary>
-        /// 艦娘のデータ(RAW)
+        /// 艦娘のデータ
         /// </summary>
-        private ObservableCollection<Kammusu> kammusuList { get; } = new ObservableCollection<Kammusu>();
+        public ObservableCollection<Kammusu> KammusuList { get; } = new ObservableCollection<Kammusu>();
 
         /// <summary>
         /// 艦娘のID一覧(重複検索用)
@@ -27,24 +27,14 @@ namespace RepairDatabaseEditor.Service
         private IDictionary<int, int> kammusuIdDic = new Dictionary<int, int>();
 
         /// <summary>
-        /// 艦娘のデータ
+        /// 装備のデータ
         /// </summary>
-        public ReadOnlyReactiveCollection<Kammusu> SortedKammusuList { get; }
-
-        /// <summary>
-        /// 装備のデータ(RAW)
-        /// </summary>
-        private ObservableCollection<Weapon> weaponList { get; } = new ObservableCollection<Weapon>();
+        public ObservableCollection<Weapon> WeaponList { get; } = new ObservableCollection<Weapon>();
 
         /// <summary>
         /// 装備のID一覧(重複検索用)
         /// </summary>
         private IDictionary<int, int> weaponIdDic = new Dictionary<int, int>();
-
-        /// <summary>
-        /// 装備のデータ
-        /// </summary>
-        public ReadOnlyReactiveCollection<Weapon> SortedWeaponList { get; }
 
         /// <summary>
         /// コンストラクタ
@@ -59,7 +49,7 @@ namespace RepairDatabaseEditor.Service
                 int i = 0;
                 foreach(Kammusu temp in list)
                 {
-                    kammusuList.Add(temp);
+                    KammusuList.Add(temp);
                     kammusuIdDic.Add(temp.Id, i);
                     ++i;
                 }
@@ -73,15 +63,11 @@ namespace RepairDatabaseEditor.Service
                 int i = 0;
                 foreach (Weapon temp in list)
                 {
-                    weaponList.Add(temp);
+                    WeaponList.Add(temp);
                     weaponIdDic.Add(temp.Id, i);
                     ++i;
                 }
             }
-
-            // その他変数を設定
-            SortedKammusuList = (new ObservableCollection<Kammusu>(kammusuList.OrderBy(k => k.Id))).ToReadOnlyReactiveCollection();
-            SortedWeaponList = (new ObservableCollection<Weapon>(weaponList.OrderBy(k => k.Id))).ToReadOnlyReactiveCollection();
         }
 
         /// <summary>
@@ -96,8 +82,8 @@ namespace RepairDatabaseEditor.Service
             {
                 return false;
             }
-            kammusuList.Add(new Kammusu() { Id = id, Name = name });
-            kammusuIdDic.Add(id, kammusuList.Count - 1);
+            KammusuList.Add(new Kammusu() { Id = id, Name = name });
+            kammusuIdDic.Add(id, KammusuList.Count - 1);
             return true;
         }
 
@@ -115,7 +101,7 @@ namespace RepairDatabaseEditor.Service
             }
             var temp = new Kammusu() { Id = id, Name = name };
             int index = kammusuIdDic[oldId];
-            kammusuList[index] = temp;
+            KammusuList[index] = temp;
             kammusuIdDic.Remove(oldId);
             kammusuIdDic.Add(id, index);
             return true;
@@ -133,11 +119,11 @@ namespace RepairDatabaseEditor.Service
                 return false;
             }
             int index = kammusuIdDic[oldId];
-            kammusuList.RemoveAt(index);
+            KammusuList.RemoveAt(index);
             kammusuIdDic.Remove(oldId);
-            for (int i = index; i < kammusuList.Count; ++i)
+            for (int i = index; i < KammusuList.Count; ++i)
             {
-                int id = kammusuList[i].Id;
+                int id = KammusuList[i].Id;
                 --kammusuIdDic[id];
             }
             return true;
