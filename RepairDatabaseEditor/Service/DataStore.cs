@@ -17,24 +17,36 @@ namespace RepairDatabaseEditor.Service
     class DataStore
     {
         /// <summary>
-        /// 艦娘のデータ
-        /// </summary>
-        public ObservableCollection<Kammusu> KammusuList { get; } = new ObservableCollection<Kammusu>();
-
-        /// <summary>
         /// 艦娘のID一覧(重複検索用)
         /// </summary>
         private IDictionary<int, int> kammusuIdDic = new Dictionary<int, int>();
 
         /// <summary>
-        /// 装備のデータ
-        /// </summary>
-        public ObservableCollection<Weapon> WeaponList { get; } = new ObservableCollection<Weapon>();
-
-        /// <summary>
         /// 装備のID一覧(重複検索用)
         /// </summary>
         private IDictionary<int, int> weaponIdDic = new Dictionary<int, int>();
+
+        /// <summary>
+        /// 艦娘のデータを保存
+        /// </summary>
+        private void SaveKammusuList()
+        {
+            string jsonText = JsonConvert.SerializeObject(KammusuList, Formatting.Indented);
+            using(var sw = new StreamWriter(@"DB/kammusu_list.json", false, Encoding.UTF8))
+            {
+                sw.Write(jsonText);
+            }
+        }
+
+        /// <summary>
+        /// 艦娘のデータ
+        /// </summary>
+        public ObservableCollection<Kammusu> KammusuList { get; } = new ObservableCollection<Kammusu>();
+
+        /// <summary>
+        /// 装備のデータ
+        /// </summary>
+        public ObservableCollection<Weapon> WeaponList { get; } = new ObservableCollection<Weapon>();
 
         /// <summary>
         /// コンストラクタ
@@ -84,6 +96,7 @@ namespace RepairDatabaseEditor.Service
             }
             KammusuList.Add(new Kammusu() { Id = id, Name = name });
             kammusuIdDic.Add(id, KammusuList.Count - 1);
+            SaveKammusuList();
             return true;
         }
 
@@ -104,6 +117,7 @@ namespace RepairDatabaseEditor.Service
             KammusuList[index] = temp;
             kammusuIdDic.Remove(oldId);
             kammusuIdDic.Add(id, index);
+            SaveKammusuList();
             return true;
         }
 
@@ -126,6 +140,7 @@ namespace RepairDatabaseEditor.Service
                 int id = KammusuList[i].Id;
                 --kammusuIdDic[id];
             }
+            SaveKammusuList();
             return true;
         }
     }

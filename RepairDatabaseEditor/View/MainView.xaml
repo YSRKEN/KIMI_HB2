@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RepairDatabaseEditor.View"
         mc:Ignorable="d" Topmost="True"
-        Title="改修情報DBエディタ" Height="370" Width="450">
+        Title="改修情報DBエディタ" Height="370" Width="450" MinHeight="370" MinWidth="450">
     <TabControl Margin="10,10,10,10">
         <TabItem Header="艦娘情報">
             <StackPanel Orientation="Vertical" Margin="5,5,5,5">
