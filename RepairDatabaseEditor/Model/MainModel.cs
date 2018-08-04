@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +19,16 @@ namespace RepairDatabaseEditor.Model
         /// データベース
         /// </summary>
         private DataStore dataStore;
+
+        /// <summary>
+        /// 艦娘の番号(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> kammusuId;
+
+        /// <summary>
+        /// 装備の番号(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> weaponId;
 
         /// <summary>
         /// 艦娘一覧
@@ -62,17 +73,17 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 艦娘を追加
         /// </summary>
-        public ReactiveCommand PostKammusuCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand PostKammusuCommand { get; }
 
         /// <summary>
         /// 艦娘を更新
         /// </summary>
-        public ReactiveCommand PutKammusuCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand PutKammusuCommand { get; }
 
         /// <summary>
         /// 艦娘を削除
         /// </summary>
-        public ReactiveCommand DeleteKammusuCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand DeleteKammusuCommand { get; }
 
         /// <summary>
         /// 装備を追加
@@ -110,6 +121,27 @@ namespace RepairDatabaseEditor.Model
                 collectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Ascending));
             }
 
+            // オブジェクトからオブジェクトを構成
+            kammusuId = KammusuId.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            weaponId = WeaponId.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            PostKammusuCommand = kammusuId.Select(num => num >= 0)
+                .CombineLatest(KammusuName, (flg, str) => flg && str != "")
+                .ToReactiveCommand();
+            PutKammusuCommand = kammusuId.Select(num => num >= 0)
+                .CombineLatest(KammusuName, (flg, str) => flg && str != "")
+                .CombineLatest(SelectedKammusu, (flg, kammusu) => flg && kammusu.Name != null)
+                .ToReactiveCommand();
+            DeleteKammusuCommand = SelectedKammusu.Select(kammusu => kammusu.Name != null)
+                .ToReactiveCommand();
+
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {
                 if (value == null)
@@ -138,21 +170,8 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PostKammusu()
         {
-            // 艦番がパースできない際は何もしない
-            int kammusuId = -1;
-            if(!int.TryParse(KammusuId.Value, out kammusuId))
-            {
-                return;
-            }
-
-            // 艦名が空白な際は何もしない
-            if(KammusuName.Value == "")
-            {
-                return;
-            }
-
             // 追加操作を行う
-            if (dataStore.PostKammusu(kammusuId, KammusuName.Value))
+            if (dataStore.PostKammusu(kammusuId.Value, KammusuName.Value))
             {
                 MessageBox.Show("艦娘データを追加しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -167,27 +186,8 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PutKammusu()
         {
-            // 艦番がパースできない際は何もしない
-            int kammusuId = -1;
-            if (!int.TryParse(KammusuId.Value, out kammusuId))
-            {
-                return;
-            }
-
-            // 艦名が空白な際は何もしない
-            if (KammusuName.Value == "")
-            {
-                return;
-            }
-
-            // そもそも選択していない際は何もしない
-            if (SelectedKammusu.Value.Name == null)
-            {
-                return;
-            }
-
             // 更新操作を行う
-            if (dataStore.PutKammusu(kammusuId, KammusuName.Value, SelectedKammusu.Value.Id))
+            if (dataStore.PutKammusu(kammusuId.Value, KammusuName.Value, SelectedKammusu.Value.Id))
             {
                 MessageBox.Show("艦娘データを更新しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -202,12 +202,6 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void DeleteKammusu()
         {
-            // そもそも選択していない際は何もしない
-            if (SelectedKammusu.Value.Name == null)
-            {
-                return;
-            }
-
             // 削除操作を行う
             if (dataStore.DeleteKammusu(SelectedKammusu.Value.Id))
             {
