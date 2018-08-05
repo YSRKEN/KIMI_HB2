@@ -71,6 +71,16 @@ namespace RepairDatabaseEditor.Model
         public ReactiveProperty<string> WeaponName { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
+        /// 改修の基本情報一覧
+        /// </summary>
+        public ReadOnlyReactiveCollection<RepairBasicInfoForPreview> BasicInfoList { get; }
+
+        /// <summary>
+        /// 選択中の装備
+        /// </summary>
+        public ReactiveProperty<RepairBasicInfoForPreview> SelectedBasicInfo { get; } = new ReactiveProperty<RepairBasicInfoForPreview>(new RepairBasicInfoForPreview());
+
+        /// <summary>
         /// 艦娘を追加
         /// </summary>
         public ReactiveCommand PostKammusuCommand { get; }
@@ -110,6 +120,7 @@ namespace RepairDatabaseEditor.Model
             this.dataStore = dataStore;
             KammusuList = dataStore.KammusuList.ToReadOnlyReactiveCollection();
             WeaponList = dataStore.WeaponList.ToReadOnlyReactiveCollection();
+            BasicInfoList = dataStore.BasicInfoList.ToReadOnlyReactiveCollection();
 
             // リストボックスの表示を常にソートするようにする
             {

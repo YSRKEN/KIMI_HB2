@@ -61,35 +61,80 @@ namespace RepairDatabaseEditor.Service
         public ObservableCollection<Weapon> WeaponList { get; } = new ObservableCollection<Weapon>();
 
         /// <summary>
+        /// 改修の基本情報のデータ
+        /// </summary>
+        public ObservableCollection<RepairBasicInfoForPreview> BasicInfoList { get; } = new ObservableCollection<RepairBasicInfoForPreview>();
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public DataStore()
         {
             // 艦娘データを読み込み
-            using(var sr = new StreamReader(@"DB/kammusu_list.json", Encoding.UTF8))
+            try
             {
-                string jsonText = sr.ReadToEnd();
-                var list = JsonConvert.DeserializeObject<IList<Kammusu>>(jsonText);
-                int i = 0;
-                foreach(Kammusu temp in list)
+                using (var sr = new StreamReader(@"DB/kammusu_list.json", Encoding.UTF8))
                 {
-                    KammusuList.Add(temp);
-                    kammusuIdDic.Add(temp.Id, i);
-                    ++i;
+                    string jsonText = sr.ReadToEnd();
+                    var list = JsonConvert.DeserializeObject<IList<Kammusu>>(jsonText);
+                    int i = 0;
+                    foreach (Kammusu temp in list)
+                    {
+                        KammusuList.Add(temp);
+                        kammusuIdDic.Add(temp.Id, i);
+                        ++i;
+                    }
                 }
             }
-
-            using (var sr = new StreamReader(@"DB/weapon_list.json", Encoding.UTF8))
+            catch(IOException e)
             {
-                string jsonText = sr.ReadToEnd();
-                var list = JsonConvert.DeserializeObject<IList<Weapon>>(jsonText);
-                int i = 0;
-                foreach (Weapon temp in list)
+                KammusuList.Clear();
+                kammusuIdDic.Clear();
+                Console.WriteLine(e);
+            }
+
+            // 装備データを読み込み
+            try
+            {
+                using (var sr = new StreamReader(@"DB/weapon_list.json", Encoding.UTF8))
                 {
-                    WeaponList.Add(temp);
-                    weaponIdDic.Add(temp.Id, i);
-                    ++i;
+                    string jsonText = sr.ReadToEnd();
+                    var list = JsonConvert.DeserializeObject<IList<Weapon>>(jsonText);
+                    int i = 0;
+                    foreach (Weapon temp in list)
+                    {
+                        WeaponList.Add(temp);
+                        weaponIdDic.Add(temp.Id, i);
+                        ++i;
+                    }
                 }
+            }
+            catch(IOException e)
+            {
+                WeaponList.Clear();
+                weaponIdDic.Clear();
+                Console.WriteLine(e);
+            }
+
+            // 改修の基本情報データを読み込み
+            try
+            {
+                using (var sr = new StreamReader(@"DB/basicinfo_list.json", Encoding.UTF8))
+                {
+                    string jsonText = sr.ReadToEnd();
+                    var list = JsonConvert.DeserializeObject<IList<RepairBasicInfo>>(jsonText);
+                    foreach (RepairBasicInfo temp in list)
+                    {
+                        string name = WeaponList[weaponIdDic[temp.Id]].Name;
+                        var temp2 = new RepairBasicInfoForPreview(temp, name);
+                        BasicInfoList.Add(temp2);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                BasicInfoList.Clear();
+                Console.WriteLine(e);
             }
         }
 

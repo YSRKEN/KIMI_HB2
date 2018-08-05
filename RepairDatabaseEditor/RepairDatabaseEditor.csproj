@@ -86,6 +86,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\Kammusu.cs" />
     <Compile Include="Model\MainModel.cs" />
+    <Compile Include="Model\RepairBasicInfo.cs" />
     <Compile Include="Model\Weapon.cs" />
     <Compile Include="Service\DataStore.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -120,6 +121,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
+    <None Include="DB\basicinfo_list.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="DB\kammusu_list.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
