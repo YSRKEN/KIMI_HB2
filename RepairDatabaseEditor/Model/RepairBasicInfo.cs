@@ -48,7 +48,7 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 装備名
         /// </summary>
-        private string Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 表示用

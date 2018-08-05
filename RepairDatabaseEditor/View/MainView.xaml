@@ -22,7 +22,7 @@
                 <TextBlock Text="艦名" Margin="5,5,5,5" />
                 <TextBox Text="{Binding model.KammusuName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
-                    <Button Content="追加" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostKammusuCommand}"/>
+                    <Button Content="追加" Margin="0,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostKammusuCommand}"/>
                     <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PutKammusuCommand}"/>
                     <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.DeleteKammusuCommand}"/>
                 </StackPanel>
@@ -43,7 +43,7 @@
                 <TextBlock Text="装備名" Margin="5,5,5,5" />
                 <TextBox Text="{Binding model.WeaponName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
                 <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
-                    <Button Content="追加" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostWeaponCommand}"/>
+                    <Button Content="追加" Margin="0,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostWeaponCommand}"/>
                     <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PutWeaponCommand}"/>
                     <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.DeleteWeaponCommand}"/>
                 </StackPanel>
@@ -59,7 +59,26 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                
+                <TextBlock Text="装備名" Margin="5,5,5,5"/>
+                <ComboBox ItemsSource="{Binding model.WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedWeapon2.Value}" Padding="5,5,5,5">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="燃料, 弾薬, 鋼材, ボーキ (正の半角整数)" Margin="5,5,5,5" />
+                <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                    <TextBox Text="{Binding model.BasicInfoFuel.Value}" Margin="0,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                    <TextBox Text="{Binding model.BasicInfoAmmo.Value}" Margin="5,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                    <TextBox Text="{Binding model.BasicInfoSteel.Value}" Margin="5,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                    <TextBox Text="{Binding model.BasicInfoBauxite.Value}" Margin="5,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                    <Button Content="追加" Margin="0,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostBasicInfoCommand}"/>
+                    <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PutBasicInfoCommand}"/>
+                    <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.DeleteBasicInfoCommand}"/>
+                </StackPanel>
             </StackPanel>
         </TabItem>
         <TabItem Header="改修消費2">

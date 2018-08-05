@@ -125,6 +125,10 @@ namespace RepairDatabaseEditor.Service
                     var list = JsonConvert.DeserializeObject<IList<RepairBasicInfo>>(jsonText);
                     foreach (RepairBasicInfo temp in list)
                     {
+                        if (!weaponIdDic.ContainsKey(temp.Id))
+                        {
+                            continue;
+                        }
                         string name = WeaponList[weaponIdDic[temp.Id]].Name;
                         var temp2 = new RepairBasicInfoForPreview(temp, name);
                         BasicInfoList.Add(temp2);
@@ -198,6 +202,23 @@ namespace RepairDatabaseEditor.Service
             }
             SaveKammusuList();
             return true;
+        }
+
+        /// <summary>
+        /// 装備のデータを取得する
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Weapon GetWeapon(int id)
+        {
+            if (weaponIdDic.ContainsKey(id))
+            {
+                return WeaponList[weaponIdDic[id]];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

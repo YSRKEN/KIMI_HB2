@@ -1,4 +1,5 @@
 ﻿using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using RepairDatabaseEditor.Service;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,26 @@ namespace RepairDatabaseEditor.Model
         /// 装備の番号(数字に変換後)
         /// </summary>
         private ReadOnlyReactiveProperty<int> weaponId;
+
+        /// <summary>
+        /// 改修の基本情報(燃料)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> basicInfoFuel;
+
+        /// <summary>
+        /// 改修の基本情報(弾薬)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> basicInfoAmmo;
+
+        /// <summary>
+        /// 改修の基本情報(鋼材)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> basicInfoSteel;
+
+        /// <summary>
+        /// 改修の基本情報(ボーキ)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> basicInfoBauxite;
 
         /// <summary>
         /// 艦娘一覧
@@ -76,9 +97,34 @@ namespace RepairDatabaseEditor.Model
         public ReadOnlyReactiveCollection<RepairBasicInfoForPreview> BasicInfoList { get; }
 
         /// <summary>
-        /// 選択中の装備
+        /// 選択中の基本情報
         /// </summary>
         public ReactiveProperty<RepairBasicInfoForPreview> SelectedBasicInfo { get; } = new ReactiveProperty<RepairBasicInfoForPreview>(new RepairBasicInfoForPreview());
+
+        /// <summary>
+        /// 選択中の装備2
+        /// </summary>
+        public ReactiveProperty<Weapon> SelectedWeapon2 { get; } = new ReactiveProperty<Weapon>(new Weapon());
+
+        /// <summary>
+        /// 改修の基本情報(燃料)
+        /// </summary>
+        public ReactiveProperty<string> BasicInfoFuel { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の基本情報(弾薬)
+        /// </summary>
+        public ReactiveProperty<string> BasicInfoAmmo { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の基本情報(鋼材)
+        /// </summary>
+        public ReactiveProperty<string> BasicInfoSteel { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の基本情報(ボーキ)
+        /// </summary>
+        public ReactiveProperty<string> BasicInfoBauxite { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
         /// 艦娘を追加
@@ -98,17 +144,32 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 装備を追加
         /// </summary>
-        public ReactiveCommand PostWeaponCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand PostWeaponCommand { get; }
 
         /// <summary>
         /// 装備を更新
         /// </summary>
-        public ReactiveCommand PutWeaponCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand PutWeaponCommand { get; }
 
         /// <summary>
         /// 装備を削除
         /// </summary>
-        public ReactiveCommand DeleteWeaponCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand DeleteWeaponCommand { get; }
+
+        /// <summary>
+        /// 改修の基本情報を追加
+        /// </summary>
+        public ReactiveCommand PostBasicInfoCommand { get; }
+
+        /// <summary>
+        /// 改修の基本情報を更新
+        /// </summary>
+        public ReactiveCommand PutBasicInfoCommand { get; }
+
+        /// <summary>
+        /// 改修の基本情報を削除
+        /// </summary>
+        public ReactiveCommand DeleteBasicInfoCommand { get; }
 
         /// <summary>
         /// コンストラクタ
@@ -131,6 +192,10 @@ namespace RepairDatabaseEditor.Model
                 var collectionView = CollectionViewSource.GetDefaultView(this.WeaponList);
                 collectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Ascending));
             }
+            {
+                var collectionView = CollectionViewSource.GetDefaultView(this.BasicInfoList);
+                collectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Ascending));
+            }
 
             // オブジェクトからオブジェクトを構成
             kammusuId = KammusuId.Select(str =>
@@ -139,6 +204,26 @@ namespace RepairDatabaseEditor.Model
                 return int.TryParse(str, out num) ? num : -1;
             }).ToReadOnlyReactiveProperty();
             weaponId = WeaponId.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            basicInfoFuel = BasicInfoFuel.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            basicInfoAmmo = BasicInfoAmmo.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            basicInfoSteel = BasicInfoSteel.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            basicInfoBauxite = BasicInfoBauxite.Select(str =>
             {
                 int num = -1;
                 return int.TryParse(str, out num) ? num : -1;
@@ -164,6 +249,24 @@ namespace RepairDatabaseEditor.Model
             DeleteWeaponCommand = SelectedWeapon.Select(weapon => weapon != null && weapon.Name != null)
                 .ToReactiveCommand();
 
+            PostBasicInfoCommand = new[] {
+                basicInfoFuel.Select(num => num >= 0),
+                basicInfoAmmo.Select(num => num >= 0),
+                basicInfoFuel.Select(num => num >= 0),
+                basicInfoBauxite.Select(num => num >= 0),
+                SelectedWeapon2.Select(weapon => weapon != null && weapon.Name != null)
+            }.CombineLatestValuesAreAllTrue().ToReactiveCommand();
+            PutBasicInfoCommand = new[] {
+                basicInfoFuel.Select(num => num >= 0),
+                basicInfoAmmo.Select(num => num >= 0),
+                basicInfoFuel.Select(num => num >= 0),
+                basicInfoBauxite.Select(num => num >= 0),
+                SelectedBasicInfo.Select(basicInfo => basicInfo != null && basicInfo.Name != null),
+                SelectedWeapon2.Select(weapon => weapon != null && weapon.Name != null)
+            }.CombineLatestValuesAreAllTrue().ToReactiveCommand();
+            DeleteBasicInfoCommand = SelectedBasicInfo.Select(basicInfo => basicInfo != null && basicInfo.Name != null)
+                .ToReactiveCommand();
+
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {
                 if (value == null)
@@ -177,6 +280,15 @@ namespace RepairDatabaseEditor.Model
                 WeaponId.Value = value.Id.ToString();
                 WeaponName.Value = value.Name;
             });
+            SelectedBasicInfo.Subscribe(value => {
+                if (value == null)
+                    return;
+                SelectedWeapon2.Value = dataStore.GetWeapon(value.Id);
+                BasicInfoFuel.Value = value.Fuel.ToString();
+                BasicInfoAmmo.Value = value.Ammo.ToString();
+                BasicInfoSteel.Value = value.Steel.ToString();
+                BasicInfoBauxite.Value = value.Bauxite.ToString();
+            });
 
             // ボタンを押した際の処理を記述
             PostKammusuCommand.Subscribe(PostKammusu);
@@ -185,6 +297,9 @@ namespace RepairDatabaseEditor.Model
             PostWeaponCommand.Subscribe(PostWeapon);
             PutWeaponCommand.Subscribe(PutWeapon);
             DeleteWeaponCommand.Subscribe(DeleteWeapon);
+            PostBasicInfoCommand.Subscribe(PostBasicInfo);
+            PutBasicInfoCommand.Subscribe(PutBasicInfo);
+            DeleteBasicInfoCommand.Subscribe(DeleteBasicInfo);
         }
 
         /// <summary>
@@ -281,6 +396,30 @@ namespace RepairDatabaseEditor.Model
             {
                 MessageBox.Show("装備データを削除できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        /// <summary>
+        /// 基本情報を追加
+        /// </summary>
+        public void PostBasicInfo()
+        {
+            return;
+        }
+
+        /// <summary>
+        /// 基本情報を変更
+        /// </summary>
+        public void PutBasicInfo()
+        {
+
+        }
+
+        /// <summary>
+        /// 基本情報を削除
+        /// </summary>
+        public void DeleteBasicInfo()
+        {
+
         }
     }
 }
