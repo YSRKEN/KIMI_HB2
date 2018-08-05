@@ -48,11 +48,13 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 装備名
         /// </summary>
+        [JsonIgnore]
         public string Name { get; set; }
 
         /// <summary>
         /// 表示用
         /// </summary>
+        [JsonIgnore]
         public string ListName { get => Name + " : " + Fuel + "," + Ammo + "," + Steel + "," + Bauxite; }
 
         /// <summary>

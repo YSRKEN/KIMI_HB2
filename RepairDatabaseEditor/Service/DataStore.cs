@@ -27,6 +27,11 @@ namespace RepairDatabaseEditor.Service
         private IDictionary<int, int> weaponIdDic = new Dictionary<int, int>();
 
         /// <summary>
+        /// 装備のID一覧(基本情報の重複検索用)
+        /// </summary>
+        private IDictionary<int, int> weaponIdDic2 = new Dictionary<int, int>();
+
+        /// <summary>
         /// 艦娘のデータを保存
         /// </summary>
         private void SaveKammusuList()
@@ -45,6 +50,18 @@ namespace RepairDatabaseEditor.Service
         {
             string jsonText = JsonConvert.SerializeObject(WeaponList, Formatting.Indented);
             using (var sw = new StreamWriter(@"DB/weapon_list.json", false, Encoding.UTF8))
+            {
+                sw.Write(jsonText);
+            }
+        }
+
+        /// <summary>
+        /// 改修の基本情報のデータを保存
+        /// </summary>
+        private void SaveBasicInfoList()
+        {
+            string jsonText = JsonConvert.SerializeObject(BasicInfoList, Formatting.Indented);
+            using (var sw = new StreamWriter(@"DB/basicinfo_list.json", false, Encoding.UTF8))
             {
                 sw.Write(jsonText);
             }
@@ -123,6 +140,7 @@ namespace RepairDatabaseEditor.Service
                 {
                     string jsonText = sr.ReadToEnd();
                     var list = JsonConvert.DeserializeObject<IList<RepairBasicInfo>>(jsonText);
+                    int i = 0;
                     foreach (RepairBasicInfo temp in list)
                     {
                         if (!weaponIdDic.ContainsKey(temp.Id))
@@ -132,12 +150,15 @@ namespace RepairDatabaseEditor.Service
                         string name = WeaponList[weaponIdDic[temp.Id]].Name;
                         var temp2 = new RepairBasicInfoForPreview(temp, name);
                         BasicInfoList.Add(temp2);
+                        weaponIdDic2.Add(temp2.Id, i);
+                        ++i;
                     }
                 }
             }
             catch(Exception e)
             {
                 BasicInfoList.Clear();
+                weaponIdDic2.Clear();
                 Console.WriteLine(e);
             }
         }
@@ -280,6 +301,31 @@ namespace RepairDatabaseEditor.Service
                 --weaponIdDic[id];
             }
             SaveWeaponList();
+            return true;
+        }
+
+        /// <summary>
+        /// 改修の基本情報のデータを追加する
+        /// </summary>
+        /// <param name="id">装備ID</param>
+        /// <param name="name">装備名</param>
+        /// <returns>追加できたならtrue</returns>
+        public bool PostWeaponBasicInfo(int id, int fuel, int ammo, int steel, int bauxite)
+        {
+            if (weaponIdDic2.ContainsKey(id))
+            {
+                return false;
+            }
+            BasicInfoList.Add(new RepairBasicInfoForPreview() {
+                Id = id,
+                Name = WeaponList[weaponIdDic[id]].Name,
+                Fuel = fuel,
+                Ammo = ammo,
+                Steel = steel,
+                Bauxite = bauxite
+            });
+            weaponIdDic2.Add(id, WeaponList.Count - 1);
+            SaveBasicInfoList();
             return true;
         }
     }

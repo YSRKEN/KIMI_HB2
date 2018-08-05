@@ -403,7 +403,17 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PostBasicInfo()
         {
-            return;
+            // 追加操作を行う
+            if (dataStore.PostWeaponBasicInfo(
+                SelectedWeapon2.Value.Id, basicInfoFuel.Value, basicInfoAmmo.Value,
+                basicInfoSteel.Value, basicInfoBauxite.Value))
+            {
+                MessageBox.Show("改修の基本情報データを追加しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("改修の基本情報データを追加できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         /// <summary>
