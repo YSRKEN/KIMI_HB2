@@ -324,7 +324,59 @@ namespace RepairDatabaseEditor.Service
                 Steel = steel,
                 Bauxite = bauxite
             });
-            weaponIdDic2.Add(id, WeaponList.Count - 1);
+            weaponIdDic2.Add(id, BasicInfoList.Count - 1);
+            SaveBasicInfoList();
+            return true;
+        }
+
+        /// <summary>
+        /// 改修の基本情報のデータを更新する
+        /// </summary>
+        /// <param name="id">装備ID</param>
+        /// <param name="name">装備名</param>
+        /// <returns>更新できたならtrue</returns>
+        public bool PutWeaponBasicInfo(int id, int fuel, int ammo, int steel, int bauxite, int oldId)
+        {
+            if (id != oldId && weaponIdDic2.ContainsKey(id))
+            {
+                return false;
+            }
+            var temp = new RepairBasicInfoForPreview()
+            {
+                Id = id,
+                Name = WeaponList[weaponIdDic[id]].Name,
+                Fuel = fuel,
+                Ammo = ammo,
+                Steel = steel,
+                Bauxite = bauxite
+            };
+            int index = weaponIdDic2[oldId];
+            BasicInfoList[index] = temp;
+            weaponIdDic2.Remove(oldId);
+            weaponIdDic2.Add(id, index);
+            SaveBasicInfoList();
+            return true;
+        }
+
+        /// <summary>
+        /// 改修の基本情報のデータを削除する
+        /// </summary>
+        /// <param name="oldId"></param>
+        public bool DeleteWeaponBasicInfo(int oldId)
+        {
+
+            if (!weaponIdDic2.ContainsKey(oldId))
+            {
+                return false;
+            }
+            int index = weaponIdDic2[oldId];
+            BasicInfoList.RemoveAt(index);
+            weaponIdDic2.Remove(oldId);
+            for (int i = index; i < BasicInfoList.Count; ++i)
+            {
+                int id = BasicInfoList[i].Id;
+                --weaponIdDic2[id];
+            }
             SaveBasicInfoList();
             return true;
         }

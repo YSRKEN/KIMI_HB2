@@ -421,7 +421,17 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void PutBasicInfo()
         {
-
+            // 更新操作を行う
+            if (dataStore.PutWeaponBasicInfo(
+                SelectedWeapon2.Value.Id, basicInfoFuel.Value, basicInfoAmmo.Value,
+                basicInfoSteel.Value, basicInfoBauxite.Value, SelectedBasicInfo.Value.Id))
+            {
+                MessageBox.Show("改修の基本情報データを更新しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("改修の基本情報データを更新できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         /// <summary>
@@ -429,7 +439,15 @@ namespace RepairDatabaseEditor.Model
         /// </summary>
         public void DeleteBasicInfo()
         {
-
+            // 削除操作を行う
+            if (dataStore.DeleteWeaponBasicInfo(SelectedBasicInfo.Value.Id))
+            {
+                MessageBox.Show("改修の基本情報データを削除しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("改修の基本情報データを削除できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }
