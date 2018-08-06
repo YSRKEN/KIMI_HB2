@@ -4,6 +4,7 @@ using RepairDatabaseEditor.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,11 @@ namespace RepairDatabaseEditor.Service
     /// </summary>
     class DataStore
     {
+        /// <summary>
+        /// 改修情報を取り扱うためのデータベース
+        /// </summary>
+        private SQLiteConnectionStringBuilder sqlConnectionSb = new SQLiteConnectionStringBuilder { DataSource = @"DB\repair_db.db" };
+
         /// <summary>
         /// 艦娘のID一覧(重複検索用)
         /// </summary>
@@ -87,6 +93,16 @@ namespace RepairDatabaseEditor.Service
         /// </summary>
         public DataStore()
         {
+            using (var cn = new SQLiteConnection(sqlConnectionSb.ToString()))
+            {
+                cn.Open();
+                using (var cmd = new SQLiteCommand(cn))
+                {
+                    cmd.CommandText = "select sqlite_version()";
+                    Console.WriteLine(cmd.ExecuteScalar());
+                }
+            }
+
             // 艦娘データを読み込み
             try
             {
