@@ -89,94 +89,43 @@ namespace RepairDatabaseEditor.Service
         public ObservableCollection<RepairBasicInfoForPreview> BasicInfoList { get; } = new ObservableCollection<RepairBasicInfoForPreview>();
 
         /// <summary>
-        /// コンストラクタ
+        /// 結果を返さなくてもいいSQLを処理する
         /// </summary>
-        public DataStore()
+        /// <param name="query"></param>
+        public void ExecuteNonQuery(string query)
         {
             using (var cn = new SQLiteConnection(sqlConnectionSb.ToString()))
             {
                 cn.Open();
                 using (var cmd = new SQLiteCommand(cn))
                 {
-                    cmd.CommandText = "select sqlite_version()";
-                    Console.WriteLine(cmd.ExecuteScalar());
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
                 }
             }
+        }
 
-            // 艦娘データを読み込み
-            try
-            {
-                using (var sr = new StreamReader(@"DB/kammusu_list.json", Encoding.UTF8))
-                {
-                    string jsonText = sr.ReadToEnd();
-                    var list = JsonConvert.DeserializeObject<IList<Kammusu>>(jsonText);
-                    int i = 0;
-                    foreach (Kammusu temp in list)
-                    {
-                        KammusuList.Add(temp);
-                        kammusuIdDic.Add(temp.Id, i);
-                        ++i;
-                    }
-                }
-            }
-            catch(IOException e)
-            {
-                KammusuList.Clear();
-                kammusuIdDic.Clear();
-                Console.WriteLine(e);
-            }
-
-            // 装備データを読み込み
-            try
-            {
-                using (var sr = new StreamReader(@"DB/weapon_list.json", Encoding.UTF8))
-                {
-                    string jsonText = sr.ReadToEnd();
-                    var list = JsonConvert.DeserializeObject<IList<Weapon>>(jsonText);
-                    int i = 0;
-                    foreach (Weapon temp in list)
-                    {
-                        WeaponList.Add(temp);
-                        weaponIdDic.Add(temp.Id, i);
-                        ++i;
-                    }
-                }
-            }
-            catch(IOException e)
-            {
-                WeaponList.Clear();
-                weaponIdDic.Clear();
-                Console.WriteLine(e);
-            }
-
-            // 改修の基本情報データを読み込み
-            try
-            {
-                using (var sr = new StreamReader(@"DB/basicinfo_list.json", Encoding.UTF8))
-                {
-                    string jsonText = sr.ReadToEnd();
-                    var list = JsonConvert.DeserializeObject<IList<RepairBasicInfo>>(jsonText);
-                    int i = 0;
-                    foreach (RepairBasicInfo temp in list)
-                    {
-                        if (!weaponIdDic.ContainsKey(temp.Id))
-                        {
-                            continue;
-                        }
-                        string name = WeaponList[weaponIdDic[temp.Id]].Name;
-                        var temp2 = new RepairBasicInfoForPreview(temp, name);
-                        BasicInfoList.Add(temp2);
-                        weaponIdDic2.Add(temp2.Id, i);
-                        ++i;
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                BasicInfoList.Clear();
-                weaponIdDic2.Clear();
-                Console.WriteLine(e);
-            }
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public DataStore()
+        {
+            // テーブルが存在しない場合は作成し直す
+            ExecuteNonQuery($@"CREATE TABLE IF NOT EXISTS kammusu (
+                id INTEGER NOT NULL UNIQUE,
+                name TEXT NOT NULL,
+                PRIMARY KEY(id))");
+            ExecuteNonQuery($@"CREATE TABLE IF NOT EXISTS weapon (
+                id INTEGER NOT NULL UNIQUE,
+                name TEXT NOT NULL,
+                PRIMARY KEY(id))");
+            ExecuteNonQuery($@"CREATE TABLE IF NOT EXISTS basic_info (
+                id INTEGER NOT NULL UNIQUE REFERENCES weapon(id),
+                fuel INTEGER NOT NULL,
+                ammo INTEGER NOT NULL,
+                steel INTEGER NOT NULL,
+                bauxite INTEGER NOT NULL,
+                PRIMARY KEY(id))");
         }
 
         /// <summary>
