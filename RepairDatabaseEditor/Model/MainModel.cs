@@ -283,7 +283,7 @@ namespace RepairDatabaseEditor.Model
             SelectedBasicInfo.Subscribe(value => {
                 if (value == null)
                     return;
-                SelectedWeapon2.Value = dataStore.GetWeapon(value.Id);
+                SelectedWeapon2.Value = value.Id != 0 ? WeaponList.Where(w => w.Id == value.Id).First() : null;
                 BasicInfoFuel.Value = value.Fuel.ToString();
                 BasicInfoAmmo.Value = value.Ammo.ToString();
                 BasicInfoSteel.Value = value.Steel.ToString();
