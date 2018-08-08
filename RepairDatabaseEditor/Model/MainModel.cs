@@ -94,12 +94,12 @@ namespace RepairDatabaseEditor.Model
         /// <summary>
         /// 改修の基本情報一覧
         /// </summary>
-        public ReadOnlyReactiveCollection<RepairBasicInfoForPreview> BasicInfoList { get; }
+        public ReadOnlyReactiveCollection<BasicInfo> BasicInfoList { get; }
 
         /// <summary>
         /// 選択中の基本情報
         /// </summary>
-        public ReactiveProperty<RepairBasicInfoForPreview> SelectedBasicInfo { get; } = new ReactiveProperty<RepairBasicInfoForPreview>(new RepairBasicInfoForPreview());
+        public ReactiveProperty<BasicInfo> SelectedBasicInfo { get; } = new ReactiveProperty<BasicInfo>(new BasicInfo());
 
         /// <summary>
         /// 選択中の装備2
