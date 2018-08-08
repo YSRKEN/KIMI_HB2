@@ -178,13 +178,8 @@ namespace RepairDatabaseEditor.Service
         /// <returns>追加できたならtrue</returns>
         public bool PostKammusu(int id, string name)
         {
-            /*if (kammusuIdDic.ContainsKey(id))
-            {
-                return false;
-            }
-            KammusuList.Add(new Kammusu() { Id = id, Name = name });
-            kammusuIdDic.Add(id, KammusuList.Count - 1);
-            RefreshKammusuList();*/
+            ExecuteNonQuery($"INSERT INTO kammusu(id, name) values({id}, '{name}')");
+            RefreshKammusuList();
             return true;
         }
 
@@ -196,16 +191,9 @@ namespace RepairDatabaseEditor.Service
         /// <returns>追加できたならtrue</returns>
         public bool PutKammusu(int id, string name, int oldId)
         {
-            /*if(id != oldId && kammusuIdDic.ContainsKey(id))
-            {
-                return false;
-            }
-            var temp = new Kammusu() { Id = id, Name = name };
-            int index = kammusuIdDic[oldId];
-            KammusuList[index] = temp;
-            kammusuIdDic.Remove(oldId);
-            kammusuIdDic.Add(id, index);
-            SaveKammusuList();*/
+            ExecuteNonQuery($"DELETE FROM kammusu WHERE id = {oldId}");
+            ExecuteNonQuery($"INSERT INTO kammusu(id, name) values({id}, '{name}')");
+            RefreshKammusuList();
             return true;
         }
 
@@ -216,19 +204,8 @@ namespace RepairDatabaseEditor.Service
         public bool DeleteKammusu(int oldId)
         {
 
-            /*if (!kammusuIdDic.ContainsKey(oldId))
-            {
-                return false;
-            }
-            int index = kammusuIdDic[oldId];
-            KammusuList.RemoveAt(index);
-            kammusuIdDic.Remove(oldId);
-            for (int i = index; i < KammusuList.Count; ++i)
-            {
-                int id = KammusuList[i].Id;
-                --kammusuIdDic[id];
-            }
-            SaveKammusuList();*/
+            ExecuteNonQuery($"DELETE FROM kammusu WHERE id = {oldId}");
+            RefreshKammusuList();
             return true;
         }
 
@@ -239,15 +216,16 @@ namespace RepairDatabaseEditor.Service
         /// <returns></returns>
         public Weapon GetWeapon(int id)
         {
-            /*if (weaponIdDic.ContainsKey(id))
+            var list = ExecuteSelectReader($"SELECT id, name FROM weapon WHERE id = {id}");
+            if (list.Count == 0)
             {
-                return WeaponList[weaponIdDic[id]];
+                return null;
             }
             else
             {
-                return null;
-            }*/
-            return null;
+                var temp = new Weapon() { Id = (int)((long)list[0]["id"]), Name = (string)list[0]["name"] };
+                return temp;
+            }
         }
 
         /// <summary>
@@ -258,13 +236,8 @@ namespace RepairDatabaseEditor.Service
         /// <returns>追加できたならtrue</returns>
         public bool PostWeapon(int id, string name)
         {
-            /*if (weaponIdDic.ContainsKey(id))
-            {
-                return false;
-            }
-            WeaponList.Add(new Weapon() { Id = id, Name = name });
-            weaponIdDic.Add(id, WeaponList.Count - 1);
-            SaveWeaponList();*/
+            ExecuteNonQuery($"INSERT INTO weapon(id, name) values({id}, '{name}')");
+            RefreshWeaponList();
             return true;
         }
 
@@ -276,16 +249,9 @@ namespace RepairDatabaseEditor.Service
         /// <returns>追加できたならtrue</returns>
         public bool PutWeapon(int id, string name, int oldId)
         {
-            /*if (id != oldId && weaponIdDic.ContainsKey(id))
-            {
-                return false;
-            }
-            var temp = new Weapon() { Id = id, Name = name };
-            int index = weaponIdDic[oldId];
-            WeaponList[index] = temp;
-            weaponIdDic.Remove(oldId);
-            weaponIdDic.Add(id, index);
-            SaveWeaponList();*/
+            ExecuteNonQuery($"DELETE FROM weapon WHERE id = {oldId}");
+            ExecuteNonQuery($"INSERT INTO weapon(id, name) values({id}, '{name}')");
+            RefreshWeaponList();
             return true;
         }
 
@@ -295,20 +261,8 @@ namespace RepairDatabaseEditor.Service
         /// <param name="oldId"></param>
         public bool DeleteWeapon(int oldId)
         {
-
-            /*if (!weaponIdDic.ContainsKey(oldId))
-            {
-                return false;
-            }
-            int index = weaponIdDic[oldId];
-            WeaponList.RemoveAt(index);
-            weaponIdDic.Remove(oldId);
-            for (int i = index; i < WeaponList.Count; ++i)
-            {
-                int id = WeaponList[i].Id;
-                --weaponIdDic[id];
-            }
-            SaveWeaponList();*/
+            ExecuteNonQuery($"DELETE FROM weapon WHERE id = {oldId}");
+            RefreshWeaponList();
             return true;
         }
 
@@ -320,20 +274,8 @@ namespace RepairDatabaseEditor.Service
         /// <returns>追加できたならtrue</returns>
         public bool PostWeaponBasicInfo(int id, int fuel, int ammo, int steel, int bauxite)
         {
-            /*if (weaponIdDic2.ContainsKey(id))
-            {
-                return false;
-            }
-            BasicInfoList.Add(new RepairBasicInfoForPreview() {
-                Id = id,
-                Name = WeaponList[weaponIdDic[id]].Name,
-                Fuel = fuel,
-                Ammo = ammo,
-                Steel = steel,
-                Bauxite = bauxite
-            });
-            weaponIdDic2.Add(id, BasicInfoList.Count - 1);
-            SaveBasicInfoList();*/
+            ExecuteNonQuery($"INSERT INTO basic_info(id, fuel, ammo, steel, bauxite) values({id}, '{fuel}', '{ammo}', '{steel}', '{bauxite}')");
+            RefreshBasicInfoList();
             return true;
         }
 
@@ -345,24 +287,9 @@ namespace RepairDatabaseEditor.Service
         /// <returns>更新できたならtrue</returns>
         public bool PutWeaponBasicInfo(int id, int fuel, int ammo, int steel, int bauxite, int oldId)
         {
-            /*if (id != oldId && weaponIdDic2.ContainsKey(id))
-            {
-                return false;
-            }
-            var temp = new RepairBasicInfoForPreview()
-            {
-                Id = id,
-                Name = WeaponList[weaponIdDic[id]].Name,
-                Fuel = fuel,
-                Ammo = ammo,
-                Steel = steel,
-                Bauxite = bauxite
-            };
-            int index = weaponIdDic2[oldId];
-            BasicInfoList[index] = temp;
-            weaponIdDic2.Remove(oldId);
-            weaponIdDic2.Add(id, index);
-            SaveBasicInfoList();*/
+            ExecuteNonQuery($"DELETE FROM basic_info WHERE id = {oldId}");
+            ExecuteNonQuery($"INSERT INTO basic_info(id, fuel, ammo, steel, bauxite) values({id}, '{fuel}', '{ammo}', '{steel}', '{bauxite}')");
+            RefreshBasicInfoList();
             return true;
         }
 
@@ -373,19 +300,8 @@ namespace RepairDatabaseEditor.Service
         public bool DeleteWeaponBasicInfo(int oldId)
         {
 
-            /*if (!weaponIdDic2.ContainsKey(oldId))
-            {
-                return false;
-            }
-            int index = weaponIdDic2[oldId];
-            BasicInfoList.RemoveAt(index);
-            weaponIdDic2.Remove(oldId);
-            for (int i = index; i < BasicInfoList.Count; ++i)
-            {
-                int id = BasicInfoList[i].Id;
-                --weaponIdDic2[id];
-            }
-            SaveBasicInfoList();*/
+            ExecuteNonQuery($"DELETE FROM basic_info WHERE id = {oldId}");
+            RefreshBasicInfoList();
             return true;
         }
     }
