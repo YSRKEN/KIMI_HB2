@@ -2,13 +2,9 @@
 using Reactive.Bindings.Extensions;
 using RepairDatabaseEditor.Service;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -127,6 +123,11 @@ namespace RepairDatabaseEditor.Model
         public ReactiveProperty<string> BasicInfoBauxite { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
+        /// 改修の拡張情報一覧
+        /// </summary>
+        public ReadOnlyReactiveCollection<ExtraInfo> ExtraInfoList { get; }
+
+        /// <summary>
         /// 艦娘を追加
         /// </summary>
         public ReactiveCommand PostKammusuCommand { get; }
@@ -182,6 +183,7 @@ namespace RepairDatabaseEditor.Model
             KammusuList = dataStore.KammusuList.ToReadOnlyReactiveCollection();
             WeaponList = dataStore.WeaponList.ToReadOnlyReactiveCollection();
             BasicInfoList = dataStore.BasicInfoList.ToReadOnlyReactiveCollection();
+            ExtraInfoList = dataStore.ExtraInfoList.ToReadOnlyReactiveCollection();
 
             // リストボックスの表示を常にソートするようにする
             {

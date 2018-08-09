@@ -89,9 +89,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\ExtraInfo.cs" />
     <Compile Include="Model\Kammusu.cs" />
     <Compile Include="Model\MainModel.cs" />
-    <Compile Include="Model\RepairBasicInfo.cs" />
+    <Compile Include="Model\BasicInfo.cs" />
+    <Compile Include="Model\RepairStep.cs" />
     <Compile Include="Model\Weapon.cs" />
     <Compile Include="Service\DataStore.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -126,17 +128,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
-    <None Include="DB\basicinfo_list.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="DB\kammusu_list.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="DB\repair_db.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="DB\weapon_list.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

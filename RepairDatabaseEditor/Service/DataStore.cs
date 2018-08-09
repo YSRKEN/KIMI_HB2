@@ -23,6 +23,18 @@ namespace RepairDatabaseEditor.Service
         private SQLiteConnectionStringBuilder sqlConnectionSb = new SQLiteConnectionStringBuilder { DataSource = @"DB\repair_db.db" };
 
         /// <summary>
+        /// repair_stepテーブルを修正した
+        /// </summary>
+        private void CreateRepairStepList()
+        {
+            for(int i = 0; i <= 10; ++i)
+            {
+                string x = (i == 10 ? "max" : i.ToString());
+                ExecuteNonQuery($"INSERT INTO repair_step(step, name) values({i}, '★{x}')");
+            }
+        }
+
+        /// <summary>
         /// KammusuListを更新する
         /// </summary>
         private void RefreshKammusuList()
@@ -57,6 +69,23 @@ namespace RepairDatabaseEditor.Service
         }
 
         /// <summary>
+        /// RepairStepListを更新する
+        /// </summary>
+        private void RefreshRepairStepList()
+        {
+            RepairStepList.Clear();
+            var list = ExecuteSelectReader("SELECT step, name FROM repair_step ORDER BY step");
+            foreach (var pair in list)
+            {
+                long step = (long)(pair["step"]);
+                string name = (string)(pair["name"]);
+                var temp = new RepairStep() { Step = (int)step, Name = name };
+                RepairStepList.Add(temp);
+            }
+            return;
+        }
+
+        /// <summary>
         /// BasicInfoListを更新する
         /// </summary>
         private void RefreshBasicInfoList()
@@ -80,6 +109,51 @@ namespace RepairDatabaseEditor.Service
         }
 
         /// <summary>
+        /// ExtraInfoListを更新する
+        /// </summary>
+        private void RefreshExtraInfoList()
+        {
+            ExtraInfoList.Clear();
+            var list = ExecuteSelectReader($@"SELECT extra_info.id, extra_info.step, extra_info.next_id, extra_info.gear_prob,
+                extra_info.gear_sure, extra_info.screw_prob, extra_info.screw_sure, extra_info.lost_id, extra_info.lost_count,
+                weapon1.name AS weapon_name, repair_step.name AS step_name, weapon2.name AS next_weapon_name
+                FROM extra_info, weapon AS weapon1, weapon AS weapon2, repair_step WHERE extra_info.id = weapon1.id
+                AND extra_info.step = repair_step.step AND extra_info.next_id = weapon2.id ORDER BY extra_info.id");
+            foreach (var pair in list)
+            {
+                long id = (long)(pair["id"]);
+                long step = (long)(pair["step"]);
+                long nextId = (long)(pair["next_id"]);
+                long gearProb = (long)(pair["gear_prob"]);
+                long gearSure = (long)(pair["gear_sure"]);
+                long screwProb = (long)(pair["screw_prob"]);
+                long screwSure = (long)(pair["screw_sure"]);
+                long lostId = (long)(pair["lost_id"]);
+                long lostCount = (long)(pair["lost_count"]);
+                string weaponName = (string)(pair["weapon_name"]);
+                string stepName = (string)(pair["step_name"]);
+                string nextWeaponName = (string)(pair["next_weapon_name"]);
+                var temp = new ExtraInfo()
+                {
+                    Id = (int)id,
+                    Step = (int)step,
+                    NextId = (int)nextId,
+                    GearProb = (int)gearProb,
+                    GearSure = (int)gearSure,
+                    ScrewProb = (int)screwProb,
+                    ScrewSure = (int)screwSure,
+                    LostId = (int)lostId,
+                    LostCount = (int)lostCount,
+                    WeaponName = weaponName,
+                    StepName = stepName,
+                    NextWeaponName = nextWeaponName
+                };
+                ExtraInfoList.Add(temp);
+            }
+            return;
+        }
+
+        /// <summary>
         /// 艦娘のデータ
         /// </summary>
         public ObservableCollection<Kammusu> KammusuList { get; } = new ObservableCollection<Kammusu>();
@@ -90,9 +164,19 @@ namespace RepairDatabaseEditor.Service
         public ObservableCollection<Weapon> WeaponList { get; } = new ObservableCollection<Weapon>();
 
         /// <summary>
+        /// 改修段階のデータ
+        /// </summary>
+        public ObservableCollection<RepairStep> RepairStepList { get; } = new ObservableCollection<RepairStep>();
+
+        /// <summary>
         /// 改修の基本情報のデータ
         /// </summary>
         public ObservableCollection<BasicInfo> BasicInfoList { get; } = new ObservableCollection<BasicInfo>();
+
+        /// <summary>
+        /// 改修の拡張情報のデータ
+        /// </summary>
+        public ObservableCollection<ExtraInfo> ExtraInfoList { get; } = new ObservableCollection<ExtraInfo>();
 
         /// <summary>
         /// 結果を返さなくてもいいSQLを処理する
@@ -163,11 +247,39 @@ namespace RepairDatabaseEditor.Service
                 steel INTEGER NOT NULL,
                 bauxite INTEGER NOT NULL,
                 PRIMARY KEY(id))");
+            ExecuteNonQuery($@"CREATE TABLE IF NOT EXISTS repair_step (
+                step INTEGER NOT NULL UNIQUE,
+                name TEXT NOT NULL UNIQUE,
+                PRIMARY KEY(step))");
+            ExecuteNonQuery($@"CREATE TABLE IF NOT EXISTS [extra_info] (
+                [id] INTEGER NOT NULL REFERENCES [weapon]([id]),
+                [step] INTEGER NOT NULL REFERENCES [repair_step]([step]),
+                [next_id] INTEGER NOT NULL REFERENCES [weapon]([id]),
+                [gear_prob] INTEGER NOT NULL,
+                [gear_sure] INTEGER NOT NULL,
+                [screw_prob] INTEGER NOT NULL,
+                [screw_sure] INTEGER NOT NULL,
+                [lost_id] INTEGER NOT NULL REFERENCES [weapon]([id]),
+                [lost_count] INTEGER NOT NULL,
+                UNIQUE([id],[step],[next_id]),
+                PRIMARY KEY([id],[step],[next_id]))");
+
+            // テーブルを初期化する
+            if (ExecuteSelectReader("SELECT * FROM repair_step").Count == 0)
+            {
+                CreateRepairStepList();
+            }
+            if (ExecuteSelectReader("SELECT * FROM weapon").Count == 0)
+            {
+                PostWeapon(0, "なし");
+            }
 
             // 表示内容を更新する
             RefreshKammusuList();
             RefreshWeaponList();
+            RefreshRepairStepList();
             RefreshBasicInfoList();
+            RefreshExtraInfoList();
         }
 
         /// <summary>
