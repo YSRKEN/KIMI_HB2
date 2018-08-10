@@ -66,13 +66,21 @@
         public string NextWeaponName { get; set; }
 
         /// <summary>
+        /// 改修段階名(表示用)
+        /// </summary>
+        public string StepName2 {
+            get {
+                return (Step == 0 ? "★0～★5" : Step == 6 ? "★6～★9" : "★max");
+            }
+        }
+
+        /// <summary>
         /// 表示用
         /// </summary>
         public string ListName {
             get {
                 string nextWeaponName = (NextId == 0 ? "" : $"⇒{NextWeaponName}");
-                string stepName = (Step == 0 ? "★0～★5" : Step == 6 ? "★6～★9" : "★max");
-                return $"{WeaponName}({stepName}){nextWeaponName}";
+                return $"{WeaponName}({StepName2}){nextWeaponName}";
             }
         }
     }

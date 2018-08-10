@@ -84,13 +84,46 @@
         <TabItem Header="改修消費2">
             <StackPanel Orientation="Vertical" Margin="5,5,5,5">
                 <TextBlock Text="改修元装備(改修段階)=>改修後装備" Margin="5,5,5,5"/>
-                <ListBox ItemsSource="{Binding model.ExtraInfoList}" Margin="5,5,5,5" Height="65">
+                <ListBox ItemsSource="{Binding model.ExtraInfoList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedExtraInfo.Value}" Height="65">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ListName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                    <StackPanel Orientation="Vertical" Margin="0,0,5,0" MinWidth="140">
+                        <TextBlock Text="装備名" Margin="5,5,5,5"/>
+                        <ComboBox ItemsSource="{Binding model.WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedWeapon3.Value}" Padding="5,5,5,5">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="0,0,5,0" MinWidth="80">
+                        <TextBlock Text="改修段階" Margin="5,5,5,5"/>
+                        <ComboBox ItemsSource="{Binding model.StepList}" Margin="5,5,5,5" Padding="5,5,5,5" SelectedItem ="{Binding model.SelectedRepairStep.Value}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="0,0,5,0" MinWidth="140">
+                        <TextBlock Text="更新後装備名" Margin="5,5,5,5"/>
+                        <ComboBox ItemsSource="{Binding model.WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedWeapon4.Value}" Padding="5,5,5,5">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Text="開発資材(通常, 確定), 改修資材(通常, 確定) (正の半角整数)" Margin="5,5,5,5" />
+                <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+                    <TextBox Text="{Binding model.ExtraInfoGearProb.Value}" Margin="0,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                    <TextBox Text="{Binding model.ExtraInfoGearSure.Value}" Margin="5,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                    <TextBox Text="{Binding model.ExtraInfoScrewProb.Value}" Margin="5,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                    <TextBox Text="{Binding model.ExtraInfoScrewSure.Value}" Margin="5,0,5,0" Padding="5,5,5,5" Width="40" TextAlignment="Right"/>
+                </StackPanel>
             </StackPanel>
         </TabItem>
         <TabItem Header="改修曜日">

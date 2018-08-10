@@ -2,6 +2,8 @@
 using Reactive.Bindings.Extensions;
 using RepairDatabaseEditor.Service;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
@@ -128,6 +130,48 @@ namespace RepairDatabaseEditor.Model
         public ReadOnlyReactiveCollection<ExtraInfo> ExtraInfoList { get; }
 
         /// <summary>
+        /// 選択中の拡張情報
+        /// </summary>
+        public ReactiveProperty<ExtraInfo> SelectedExtraInfo { get; } = new ReactiveProperty<ExtraInfo>(new ExtraInfo());
+
+        /// <summary>
+        /// 選択中の装備2
+        /// </summary>
+        public ReactiveProperty<Weapon> SelectedWeapon3 { get; } = new ReactiveProperty<Weapon>(new Weapon());
+
+        /// <summary>
+        /// 選択中の装備3
+        /// </summary>
+        public ReactiveProperty<Weapon> SelectedWeapon4 { get; } = new ReactiveProperty<Weapon>(new Weapon());
+
+        public ReadOnlyReactiveCollection<string> StepList { get; }
+
+        /// <summary>
+        /// 改修の基本情報(燃料)
+        /// </summary>
+        public ReactiveProperty<string> ExtraInfoGearProb { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の基本情報(弾薬)
+        /// </summary>
+        public ReactiveProperty<string> ExtraInfoGearSure { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の基本情報(鋼材)
+        /// </summary>
+        public ReactiveProperty<string> ExtraInfoScrewProb { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の基本情報(ボーキ)
+        /// </summary>
+        public ReactiveProperty<string> ExtraInfoScrewSure { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
+        /// 改修の拡張情報(改修段階)
+        /// </summary>
+        public ReactiveProperty<string> SelectedRepairStep { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
         /// 艦娘を追加
         /// </summary>
         public ReactiveCommand PostKammusuCommand { get; }
@@ -184,6 +228,7 @@ namespace RepairDatabaseEditor.Model
             WeaponList = dataStore.WeaponList.ToReadOnlyReactiveCollection();
             BasicInfoList = dataStore.BasicInfoList.ToReadOnlyReactiveCollection();
             ExtraInfoList = dataStore.ExtraInfoList.ToReadOnlyReactiveCollection();
+            StepList = (new ObservableCollection<string>() { "★0～★5", "★6～★9", "★max" }).ToReadOnlyReactiveCollection();
 
             // リストボックスの表示を常にソートするようにする
             {
@@ -290,6 +335,20 @@ namespace RepairDatabaseEditor.Model
                 BasicInfoAmmo.Value = value.Ammo.ToString();
                 BasicInfoSteel.Value = value.Steel.ToString();
                 BasicInfoBauxite.Value = value.Bauxite.ToString();
+            });
+            SelectedExtraInfo.Subscribe(value => {
+                if (value == null)
+                    return;
+                SelectedWeapon3.Value = value.Id != 0 ? WeaponList.Where(w => w.Id == value.Id).First() : null;
+                SelectedWeapon4.Value = value.Id != 0 ? WeaponList.Where(w => w.Id == value.NextId).First() : null;
+                SelectedRepairStep.Value = value.StepName2;
+                ExtraInfoGearProb.Value = value.GearProb.ToString();
+                ExtraInfoGearSure.Value = value.GearSure.ToString();
+                ExtraInfoScrewProb.Value = value.ScrewProb.ToString();
+                ExtraInfoScrewSure.Value = value.ScrewSure.ToString();
+            });
+            SelectedRepairStep.Subscribe(value => {
+                return;
             });
 
             // ボタンを押した際の処理を記述
