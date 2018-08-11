@@ -217,6 +217,21 @@ namespace RepairDatabaseEditor.Model
         public ReactiveCommand DeleteBasicInfoCommand { get; }
 
         /// <summary>
+        /// 改修の拡張情報を追加
+        /// </summary>
+        public ReactiveCommand PostExtraInfoCommand { get; }
+
+        /// <summary>
+        /// 改修の拡張情報を更新
+        /// </summary>
+        public ReactiveCommand PutExtraInfoCommand { get; }
+
+        /// <summary>
+        /// 改修の拡張情報を削除
+        /// </summary>
+        public ReactiveCommand DeleteExtraInfoCommand { get; }
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="dataStore">DIするデータベース</param>
@@ -313,6 +328,10 @@ namespace RepairDatabaseEditor.Model
             }.CombineLatestValuesAreAllTrue().ToReactiveCommand();
             DeleteBasicInfoCommand = SelectedBasicInfo.Select(basicInfo => basicInfo != null && basicInfo.Name != null)
                 .ToReactiveCommand();
+
+            PostExtraInfoCommand = new ReactiveCommand();
+            PutExtraInfoCommand = new ReactiveCommand();
+            DeleteExtraInfoCommand = new ReactiveCommand();
 
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {

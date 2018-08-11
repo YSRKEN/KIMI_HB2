@@ -416,5 +416,52 @@ namespace RepairDatabaseEditor.Service
             RefreshBasicInfoList();
             return true;
         }
+
+        /// <summary>
+        /// 改修の拡張情報のデータを追加する
+        /// </summary>
+        /// <param name="id">装備ID</param>
+        /// <param name="name">装備名</param>
+        /// <returns>追加できたならtrue</returns>
+        public bool PostWeaponExtraInfo(int id, int step, int next_id, int gear_prob, int gear_sure,
+            int screw_prob, int screw_sure, int lost_id, int lost_count)
+        {
+            ExecuteNonQuery($"INSERT INTO extra_info(id, step, next_id, gear_prob," +
+                $"gear_sure, screw_prob, screw_sure, lost_id, lost_count) " +
+                $"values({id}, '{step}', '{next_id}', '{gear_prob}', '{gear_sure}," +
+                $" '{screw_prob}', '{screw_sure}', '{lost_id}', '{lost_count}')");
+            RefreshExtraInfoList();
+            return true;
+        }
+
+        /// <summary>
+        /// 改修の拡張情報のデータを更新する
+        /// </summary>
+        /// <param name="id">装備ID</param>
+        /// <param name="name">装備名</param>
+        /// <returns>更新できたならtrue</returns>
+        public bool PutWeaponExtraInfo(int id, int step, int next_id, int gear_prob, int gear_sure,
+            int screw_prob, int screw_sure, int lost_id, int lost_count, int oldId)
+        {
+            ExecuteNonQuery($"DELETE FROM extra_info WHERE id = {oldId}");
+            ExecuteNonQuery($"INSERT INTO extra_info(id, step, next_id, gear_prob," +
+                $"gear_sure, screw_prob, screw_sure, lost_id, lost_count) " +
+                $"values({id}, '{step}', '{next_id}', '{gear_prob}', '{gear_sure}," +
+                $" '{screw_prob}', '{screw_sure}', '{lost_id}', '{lost_count}')");
+            RefreshBasicInfoList();
+            return true;
+        }
+
+        /// <summary>
+        /// 改修の拡張情報のデータを削除する
+        /// </summary>
+        /// <param name="oldId"></param>
+        public bool DeleteWeaponExtraInfo(int oldId)
+        {
+
+            ExecuteNonQuery($"DELETE FROM extra_info WHERE id = {oldId}");
+            RefreshExtraInfoList();
+            return true;
+        }
     }
 }
