@@ -172,6 +172,16 @@ namespace RepairDatabaseEditor.Model
         public ReactiveProperty<string> SelectedRepairStep { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
+        /// 選択中の装備5
+        /// </summary>
+        public ReactiveProperty<Weapon> SelectedWeapon5 { get; } = new ReactiveProperty<Weapon>(new Weapon());
+
+        /// <summary>
+        /// 改修の消費装備数
+        /// </summary>
+        public ReactiveProperty<string> ExtraInfoLostCount { get; } = new ReactiveProperty<string>("");
+
+        /// <summary>
         /// 艦娘を追加
         /// </summary>
         public ReactiveCommand PostKammusuCommand { get; }
@@ -360,11 +370,13 @@ namespace RepairDatabaseEditor.Model
                     return;
                 SelectedWeapon3.Value = value.Id != 0 ? WeaponList.Where(w => w.Id == value.Id).First() : null;
                 SelectedWeapon4.Value = value.Id != 0 ? WeaponList.Where(w => w.Id == value.NextId).First() : null;
+                SelectedWeapon5.Value = value.Id != 0 ? WeaponList.Where(w => w.Id == value.LostId).First() : null;
                 SelectedRepairStep.Value = value.StepName2;
                 ExtraInfoGearProb.Value = value.GearProb.ToString();
                 ExtraInfoGearSure.Value = value.GearSure.ToString();
                 ExtraInfoScrewProb.Value = value.ScrewProb.ToString();
                 ExtraInfoScrewSure.Value = value.ScrewSure.ToString();
+                ExtraInfoLostCount.Value = value.LostCount.ToString();
             });
             SelectedRepairStep.Subscribe(value => {
                 return;
