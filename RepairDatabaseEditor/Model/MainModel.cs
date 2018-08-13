@@ -50,6 +50,33 @@ namespace RepairDatabaseEditor.Model
         private ReadOnlyReactiveProperty<int> basicInfoBauxite;
 
         /// <summary>
+        /// 改修の拡張情報(開発資材通常)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> extraInfoGearProb;
+
+        /// <summary>
+        /// 改修の拡張情報(開発資材確実)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> extraInfoGearSure;
+
+        /// <summary>
+        /// 改修の拡張情報(改修資材通常)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> extraInfoScrewProb;
+
+        /// <summary>
+        /// 改修の拡張情報(改修資材確実)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> extraInfoScrewSure;
+
+        /// <summary>
+        /// 改修の拡張情報(消費装備数)(数字に変換後)
+        /// </summary>
+        private ReadOnlyReactiveProperty<int> extraInfoLostCount;
+
+        private ReadOnlyReactiveProperty<int> selectedRepairStep;
+
+        /// <summary>
         /// 艦娘一覧
         /// </summary>
         public ReadOnlyReactiveCollection<Kammusu> KammusuList { get; }
@@ -300,6 +327,31 @@ namespace RepairDatabaseEditor.Model
                 int num = -1;
                 return int.TryParse(str, out num) ? num : -1;
             }).ToReadOnlyReactiveProperty();
+            extraInfoGearProb = ExtraInfoGearProb.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            extraInfoGearSure = ExtraInfoGearSure.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            extraInfoScrewProb = ExtraInfoScrewProb.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            extraInfoScrewSure = ExtraInfoScrewSure.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
+            extraInfoLostCount = ExtraInfoLostCount.Select(str =>
+            {
+                int num = -1;
+                return int.TryParse(str, out num) ? num : -1;
+            }).ToReadOnlyReactiveProperty();
 
             PostKammusuCommand = kammusuId.Select(num => num >= 0)
                 .CombineLatest(KammusuName, (flg, str) => flg && str != "")
@@ -339,9 +391,29 @@ namespace RepairDatabaseEditor.Model
             DeleteBasicInfoCommand = SelectedBasicInfo.Select(basicInfo => basicInfo != null && basicInfo.Name != null)
                 .ToReactiveCommand();
 
-            PostExtraInfoCommand = new ReactiveCommand();
-            PutExtraInfoCommand = new ReactiveCommand();
-            DeleteExtraInfoCommand = new ReactiveCommand();
+            PostExtraInfoCommand = new[] {
+                extraInfoGearProb.Select(num => num >= 0),
+                extraInfoGearSure.Select(num => num >= 0),
+                extraInfoScrewProb.Select(num => num >= 0),
+                extraInfoScrewSure.Select(num => num >= 0),
+                extraInfoLostCount.Select(num => num >= 0),
+                SelectedWeapon3.Select(weapon => weapon != null && weapon.Name != null),
+                SelectedWeapon4.Select(weapon => weapon != null && weapon.Name != null),
+                SelectedWeapon5.Select(weapon => weapon != null && weapon.Name != null)
+            }.CombineLatestValuesAreAllTrue().ToReactiveCommand();
+            PutExtraInfoCommand = new[] {
+                extraInfoGearProb.Select(num => num >= 0),
+                extraInfoGearSure.Select(num => num >= 0),
+                extraInfoScrewProb.Select(num => num >= 0),
+                extraInfoScrewSure.Select(num => num >= 0),
+                extraInfoLostCount.Select(num => num >= 0),
+                SelectedWeapon3.Select(weapon => weapon != null && weapon.Name != null),
+                SelectedWeapon4.Select(weapon => weapon != null && weapon.Name != null),
+                SelectedWeapon5.Select(weapon => weapon != null && weapon.Name != null),
+                SelectedExtraInfo.Select(extraInfo => extraInfo != null && extraInfo.WeaponName != null),
+            }.CombineLatestValuesAreAllTrue().ToReactiveCommand();
+            DeleteExtraInfoCommand = SelectedExtraInfo.Select(extraInfo => extraInfo != null && extraInfo.WeaponName != null)
+                .ToReactiveCommand();
 
             // 選択変更時の処理を記述
             SelectedKammusu.Subscribe(value => {
@@ -378,6 +450,20 @@ namespace RepairDatabaseEditor.Model
                 ExtraInfoScrewSure.Value = value.ScrewSure.ToString();
                 ExtraInfoLostCount.Value = value.LostCount.ToString();
             });
+            selectedRepairStep = SelectedRepairStep.Select(stepString =>
+            {
+                switch (stepString)
+                {
+                    case "★0～★5":
+                        return 0;
+                    case "★6～★9":
+                        return 6;
+                    case "★max":
+                        return 10;
+                    default:
+                        return 0;
+                }
+            }).ToReadOnlyReactiveProperty();
             SelectedRepairStep.Subscribe(value => {
                 return;
             });
@@ -392,6 +478,9 @@ namespace RepairDatabaseEditor.Model
             PostBasicInfoCommand.Subscribe(PostBasicInfo);
             PutBasicInfoCommand.Subscribe(PutBasicInfo);
             DeleteBasicInfoCommand.Subscribe(DeleteBasicInfo);
+            PostExtraInfoCommand.Subscribe(PostExtraInfo);
+            PutExtraInfoCommand.Subscribe(PutExtraInfo);
+            DeleteExtraInfoCommand.Subscribe(DeleteExtraInfo);
         }
 
         /// <summary>
@@ -539,6 +628,58 @@ namespace RepairDatabaseEditor.Model
             else
             {
                 MessageBox.Show("改修の基本情報データを削除できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// 拡張情報を追加
+        /// </summary>
+        public void PostExtraInfo()
+        {
+            // 追加操作を行う
+            if (dataStore.PostWeaponExtraInfo(SelectedWeapon3.Value.Id, selectedRepairStep.Value, SelectedWeapon4.Value.Id,
+                extraInfoGearProb.Value, extraInfoGearSure.Value, extraInfoScrewProb.Value, extraInfoScrewSure.Value,
+                SelectedWeapon5.Value.Id, extraInfoLostCount.Value))
+            {
+                MessageBox.Show("改修の拡張情報データを追加しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("改修の拡張情報データを追加できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// 拡張情報を変更
+        /// </summary>
+        public void PutExtraInfo()
+        {
+            // 更新操作を行う
+            if (dataStore.PutWeaponExtraInfo(SelectedWeapon3.Value.Id, selectedRepairStep.Value, SelectedWeapon4.Value.Id,
+                extraInfoGearProb.Value, extraInfoGearSure.Value, extraInfoScrewProb.Value, extraInfoScrewSure.Value,
+                SelectedWeapon5.Value.Id, extraInfoLostCount.Value, SelectedExtraInfo.Value.Id))
+            {
+                MessageBox.Show("改修の拡張情報データを更新しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("改修の拡張情報データを更新できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// 拡張情報を削除
+        /// </summary>
+        public void DeleteExtraInfo()
+        {
+            // 削除操作を行う
+            if (dataStore.DeleteWeaponExtraInfo(SelectedExtraInfo.Value.Id))
+            {
+                MessageBox.Show("改修の拡張情報データを削除しました。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("改修の拡張情報データを削除できませんでした。", "改修情報DBエディタ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

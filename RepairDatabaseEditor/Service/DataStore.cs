@@ -386,7 +386,7 @@ namespace RepairDatabaseEditor.Service
         /// <returns>追加できたならtrue</returns>
         public bool PostWeaponBasicInfo(int id, int fuel, int ammo, int steel, int bauxite)
         {
-            ExecuteNonQuery($"INSERT INTO basic_info(id, fuel, ammo, steel, bauxite) values({id}, '{fuel}', '{ammo}', '{steel}', '{bauxite}')");
+            ExecuteNonQuery($"INSERT INTO basic_info(id, fuel, ammo, steel, bauxite) values({id}, {fuel}, {ammo}, {steel}, {bauxite})");
             RefreshBasicInfoList();
             return true;
         }
@@ -400,7 +400,7 @@ namespace RepairDatabaseEditor.Service
         public bool PutWeaponBasicInfo(int id, int fuel, int ammo, int steel, int bauxite, int oldId)
         {
             ExecuteNonQuery($"DELETE FROM basic_info WHERE id = {oldId}");
-            ExecuteNonQuery($"INSERT INTO basic_info(id, fuel, ammo, steel, bauxite) values({id}, '{fuel}', '{ammo}', '{steel}', '{bauxite}')");
+            ExecuteNonQuery($"INSERT INTO basic_info(id, fuel, ammo, steel, bauxite) values({id}, {fuel}, {ammo}, {steel}, {bauxite})");
             RefreshBasicInfoList();
             return true;
         }
@@ -428,8 +428,8 @@ namespace RepairDatabaseEditor.Service
         {
             ExecuteNonQuery($"INSERT INTO extra_info(id, step, next_id, gear_prob," +
                 $"gear_sure, screw_prob, screw_sure, lost_id, lost_count) " +
-                $"values({id}, '{step}', '{next_id}', '{gear_prob}', '{gear_sure}," +
-                $" '{screw_prob}', '{screw_sure}', '{lost_id}', '{lost_count}')");
+                $"values({id}, {step}, {next_id}, {gear_prob}, {gear_sure}," +
+                $" {screw_prob}, {screw_sure}, {lost_id}, {lost_count})");
             RefreshExtraInfoList();
             return true;
         }
@@ -446,9 +446,9 @@ namespace RepairDatabaseEditor.Service
             ExecuteNonQuery($"DELETE FROM extra_info WHERE id = {oldId}");
             ExecuteNonQuery($"INSERT INTO extra_info(id, step, next_id, gear_prob," +
                 $"gear_sure, screw_prob, screw_sure, lost_id, lost_count) " +
-                $"values({id}, '{step}', '{next_id}', '{gear_prob}', '{gear_sure}," +
-                $" '{screw_prob}', '{screw_sure}', '{lost_id}', '{lost_count}')");
-            RefreshBasicInfoList();
+                $"values({id}, {step}, {next_id}, {gear_prob}, {gear_sure}," +
+                $" {screw_prob}, {screw_sure}, {lost_id}, {lost_count})");
+            RefreshExtraInfoList();
             return true;
         }
 
