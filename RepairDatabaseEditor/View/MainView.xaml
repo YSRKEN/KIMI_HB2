@@ -108,7 +108,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="0,0,5,0" MinWidth="140">
                         <TextBlock Text="更新後装備名" Margin="0,0,5,5"/>
-                        <ComboBox ItemsSource="{Binding model.WeaponList}" Margin="0,5,5,5" SelectedItem="{Binding model.SelectedWeapon4.Value}" Padding="5,5,5,5">
+                        <ComboBox ItemsSource="{Binding model.WeaponList}" Margin="0,5,5,5" SelectedItem="{Binding model.SelectedWeapon4.Value}" Padding="5,5,5,5" IsEnabled="{Binding model.NextWeaponFlg.Value}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}" />

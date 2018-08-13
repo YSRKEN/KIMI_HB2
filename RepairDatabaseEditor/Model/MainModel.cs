@@ -209,6 +209,11 @@ namespace RepairDatabaseEditor.Model
         public ReactiveProperty<string> ExtraInfoLostCount { get; } = new ReactiveProperty<string>("");
 
         /// <summary>
+        /// 更新後装備を選択できるようにするか？
+        /// </summary>
+        public ReadOnlyReactiveProperty<bool> NextWeaponFlg { get; }
+
+        /// <summary>
         /// 艦娘を追加
         /// </summary>
         public ReactiveCommand PostKammusuCommand { get; }
@@ -352,6 +357,7 @@ namespace RepairDatabaseEditor.Model
                 int num = -1;
                 return int.TryParse(str, out num) ? num : -1;
             }).ToReadOnlyReactiveProperty();
+            NextWeaponFlg = SelectedRepairStep.Select(stepString => stepString == "★max").ToReadOnlyReactiveProperty();
 
             PostKammusuCommand = kammusuId.Select(num => num >= 0)
                 .CombineLatest(KammusuName, (flg, str) => flg && str != "")
@@ -637,7 +643,8 @@ namespace RepairDatabaseEditor.Model
         public void PostExtraInfo()
         {
             // 追加操作を行う
-            if (dataStore.PostWeaponExtraInfo(SelectedWeapon3.Value.Id, selectedRepairStep.Value, SelectedWeapon4.Value.Id,
+            if (dataStore.PostWeaponExtraInfo(SelectedWeapon3.Value.Id, selectedRepairStep.Value,
+                NextWeaponFlg.Value ? SelectedWeapon4.Value.Id : 0,
                 extraInfoGearProb.Value, extraInfoGearSure.Value, extraInfoScrewProb.Value, extraInfoScrewSure.Value,
                 SelectedWeapon5.Value.Id, extraInfoLostCount.Value))
             {
@@ -655,7 +662,8 @@ namespace RepairDatabaseEditor.Model
         public void PutExtraInfo()
         {
             // 更新操作を行う
-            if (dataStore.PutWeaponExtraInfo(SelectedWeapon3.Value.Id, selectedRepairStep.Value, SelectedWeapon4.Value.Id,
+            if (dataStore.PutWeaponExtraInfo(SelectedWeapon3.Value.Id, selectedRepairStep.Value,
+                NextWeaponFlg.Value ? SelectedWeapon4.Value.Id : 0,
                 extraInfoGearProb.Value, extraInfoGearSure.Value, extraInfoScrewProb.Value, extraInfoScrewSure.Value,
                 SelectedWeapon5.Value.Id, extraInfoLostCount.Value, SelectedExtraInfo.Value.Id))
             {
