@@ -91,6 +91,7 @@
     </ApplicationDefinition>
     <Compile Include="Dao\ExtraInfo.cs" />
     <Compile Include="Dao\Kammusu.cs" />
+    <Compile Include="Model\BasicInfoTabModel.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Dao\BasicInfo.cs" />
     <Compile Include="Dao\RepairStep.cs" />

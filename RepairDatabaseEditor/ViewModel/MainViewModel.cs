@@ -11,13 +11,15 @@ namespace RepairDatabaseEditor.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainModel model { get; }
+        public BasicInfoTabModel bitModel { get; }
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public MainViewModel(MainModel model)
+        public MainViewModel(MainModel model, BasicInfoTabModel bitModel)
         {
             this.model = model;
+            this.bitModel = bitModel;
         }
     }
 }

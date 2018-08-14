@@ -17,7 +17,8 @@ namespace RepairDatabaseEditor
             var dataStore = new DataStore();
             var mv = new MainView();
             var model = new MainModel(dataStore);
-            var mvm = new MainViewModel(model);
+            var bitModel = new BasicInfoTabModel(dataStore);
+            var mvm = new MainViewModel(model, bitModel);
             mv.DataContext = mvm;
             mv.Show();
         }
