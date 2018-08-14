@@ -89,12 +89,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\ExtraInfo.cs" />
-    <Compile Include="Model\Kammusu.cs" />
+    <Compile Include="Dao\ExtraInfo.cs" />
+    <Compile Include="Dao\Kammusu.cs" />
     <Compile Include="Model\MainModel.cs" />
-    <Compile Include="Model\BasicInfo.cs" />
-    <Compile Include="Model\RepairStep.cs" />
-    <Compile Include="Model\Weapon.cs" />
+    <Compile Include="Dao\BasicInfo.cs" />
+    <Compile Include="Dao\RepairStep.cs" />
+    <Compile Include="Dao\Weapon.cs" />
     <Compile Include="Service\DataStore.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="View\MainView.xaml.cs">
