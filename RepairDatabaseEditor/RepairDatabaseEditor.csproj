@@ -97,6 +97,15 @@
     <Compile Include="Dao\Weapon.cs" />
     <Compile Include="Service\DataStore.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="View\BasicInfoTab.xaml.cs">
+      <DependentUpon>BasicInfoTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ExtraInfoTab.xaml.cs">
+      <DependentUpon>ExtraInfoTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\KammusuTab.xaml.cs">
+      <DependentUpon>KammusuTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -104,7 +113,26 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\WeaponTab.xaml.cs">
+      <DependentUpon>WeaponTab.xaml</DependentUpon>
+    </Compile>
+    <Page Include="View\BasicInfoTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ExtraInfoTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\KammusuTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\WeaponTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,9 +1,5 @@
-﻿using Reactive.Bindings;
-using RepairDatabaseEditor.Model;
-using RepairDatabaseEditor.Service;
-using System.Collections.ObjectModel;
+﻿using RepairDatabaseEditor.Model;
 using System.ComponentModel;
-using System;
 
 namespace RepairDatabaseEditor.ViewModel
 {

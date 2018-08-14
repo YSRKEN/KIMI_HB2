@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="RepairDatabaseEditor.View.WeaponTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+    <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+        <TextBlock Text="実装一覧 (装備番号 : 装備名)" Margin="5,5,5,5"/>
+        <ListBox ItemsSource="{Binding model.WeaponList}" Margin="5,5,5,5" SelectedItem="{Binding model.SelectedWeapon.Value}" Height="65">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding ListName}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Text="装備番号 (正の半角整数)" Margin="5,5,5,5" />
+        <TextBox Text="{Binding model.WeaponId.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
+        <TextBlock Text="装備名" Margin="5,5,5,5" />
+        <TextBox Text="{Binding model.WeaponName.Value}" Margin="5,5,5,5" Padding="5,5,5,5"/>
+        <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
+            <Button Content="追加" Margin="0,5,5,5" Padding="10,5,10,5" Command="{Binding model.PostWeaponCommand}"/>
+            <Button Content="変更" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.PutWeaponCommand}"/>
+            <Button Content="削除" Margin="5,5,5,5" Padding="10,5,10,5" Command="{Binding model.DeleteWeaponCommand}"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
